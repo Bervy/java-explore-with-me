@@ -18,8 +18,8 @@ public class CompilationPublicService {
 
     public List<CompilationFullDto> findAllCompilations(Boolean pinned, Integer from, Integer size) {
         Pageable pageable = PageRequest.of(from / size, size);
-        return pinned == null ? CompilationMapper.
-                compilationToListOutDto(compilationRepository.findAlLByPinned(pinned, pageable)) :
+        return pinned == null ? CompilationMapper
+                .compilationToListOutDto(compilationRepository.findAlLByPinned(pinned, pageable)) :
                 CompilationMapper.compilationToListOutDto(compilationRepository.findAll(pageable).toList());
     }
 

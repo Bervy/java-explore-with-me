@@ -16,7 +16,6 @@ import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.EventState;
 import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.repository.EventRepository;
-import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.utils.EventSearchParameters;
 import ru.practicum.explore.utils.Utils;
 
@@ -33,7 +32,7 @@ public class EventAdminService {
     private static final int ADMIN_TIME_HOUR_BEFORE_START = 1;
     private static final int ONE_HUNDRED_YEARS_AFTER_NOW = 100;
 
-    public List<EventFullDto> findAllEvents(EventSearchParameters eventSearchParameters){
+    public List<EventFullDto> findAllEvents(EventSearchParameters eventSearchParameters) {
         List<EventState> stateList = eventSearchParameters.getStates() == null ? List.of() :
                 getCorrectStates(eventSearchParameters.getStates());
         LocalDateTime startDate = eventSearchParameters.getRangeStart() == null ? LocalDateTime.now() :
@@ -73,17 +72,17 @@ public class EventAdminService {
 
     @Transactional
     public EventFullDto updateEvent(Long eventId, EventDto eventInDto) {
-        Event event = eventRepository.findById(eventId).
-                orElseThrow(() -> new NotFoundException("Event ID not found."));
+        Event event = eventRepository.findById(eventId)
+                        .orElseThrow(() -> new NotFoundException("Event ID not found."));
         Utils.setNotNullParamToEntity(eventInDto, event, categoryRepository);
         event.setEventDate(eventInDto.getEventDate());
         return EventMapper.eventToOutDto(eventRepository.save(event));
     }
 
     private List<EventState> getCorrectStates(String[] states) {
-        try{
+        try {
             return Arrays.stream(states).map(EventAdminService::stringToEventState).collect(Collectors.toList());
-        }catch (IllegalArgumentException err) {
+        } catch(IllegalArgumentException err) {
             throw new IllegalArgumentException("State not found.");
         }
     }

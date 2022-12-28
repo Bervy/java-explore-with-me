@@ -33,8 +33,8 @@ public class EventPublicController {
             @RequestParam(name = "size", defaultValue = "10") Integer size,
             HttpServletRequest request
                                   ) {
-        SortType sortType = SortType.from(sort).
-                orElseThrow(() -> new IllegalArgumentException("Unknown type: " + sort));
+        SortType sortType = SortType.from(sort)
+                        .orElseThrow(() -> new IllegalArgumentException("Unknown type: " + sort));
         return eventPublicService.findAllEvents(
                 new EventSearchParameters(text,
                         categories,

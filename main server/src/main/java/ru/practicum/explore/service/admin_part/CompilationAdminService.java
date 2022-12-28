@@ -36,10 +36,10 @@ public class CompilationAdminService {
 
     @Transactional
     public void removeEventFromCompilation(Long compId, Long eventId) {
-        Compilation compilation = compilationRepository.findById(compId).
-                orElseThrow(() -> new NotFoundException("Compilation ID not found."));
-        Event eventToRemove = compilation.getEvents().stream().filter(e -> e.getId().equals(eventId)).findFirst().
-                orElseThrow(() -> new NotFoundException("Event not found"));
+        Compilation compilation = compilationRepository.findById(compId)
+                        .orElseThrow(() -> new NotFoundException("Compilation ID not found."));
+        Event eventToRemove = compilation.getEvents().stream().filter(e -> e.getId().equals(eventId)).findFirst()
+                        .orElseThrow(() -> new NotFoundException("Event not found"));
         compilation.getEvents().remove(eventToRemove);
         compilationRepository.save(compilation);
     }
@@ -66,8 +66,8 @@ public class CompilationAdminService {
     }
 
     private void setPin(Long compId, boolean pinned) {
-        Compilation compilation = compilationRepository.findById(compId).
-                orElseThrow(() -> new NotFoundException("Compilation ID not found."));
+        Compilation compilation = compilationRepository.findById(compId)
+                        .orElseThrow(() -> new NotFoundException("Compilation ID not found."));
         compilation.setPinned(pinned);
         compilationRepository.save(compilation);
     }

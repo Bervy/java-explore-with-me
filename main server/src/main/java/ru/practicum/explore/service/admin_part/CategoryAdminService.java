@@ -51,9 +51,9 @@ public class CategoryAdminService {
 
     private Category saveCategory(Category category) {
         Category categoryFromDb;
-        try{
+        try {
             categoryFromDb = categoryRepository.save(category);
-        }catch (DataAccessException dataAccessException) {
+        } catch(DataAccessException dataAccessException) {
             throw new ConflictException("123");
         }
         return categoryFromDb;

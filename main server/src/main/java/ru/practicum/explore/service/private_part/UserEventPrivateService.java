@@ -73,13 +73,13 @@ public class UserEventPrivateService {
         return EventMapper.eventToListOutDto(eventRepository.findAllByInitiatorId(userId, pageable));
     }
 
-    public EventFullDto getEvent(Long userId, Long eventId){
+    public EventFullDto getEvent(Long userId, Long eventId) {
         checkUserExists(userId);
         Event event = getEventFromRepository(eventId);
         return EventMapper.eventToOutDto(event);
     }
 
-    public EventFullDto cancelEvent(Long userId, Long eventId){
+    public EventFullDto cancelEvent(Long userId, Long eventId) {
         checkUserExists(userId);
         return getEventFullDto(eventId, eventRepository);
     }

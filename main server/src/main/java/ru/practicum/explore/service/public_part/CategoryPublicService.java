@@ -24,7 +24,7 @@ public class CategoryPublicService {
         return CategoryMapper.categoryToListDtoOut(categoryRepository.findAll(pageable).toList());
     }
 
-    public CategoryFullDto findCategoryById(Long catId){
+    public CategoryFullDto findCategoryById(Long catId) {
         return CategoryMapper.categoryToDtoOut(categoryRepository.findById(catId).orElseThrow(
                 () -> new NotFoundException("Category ID was not found.")
         ));
