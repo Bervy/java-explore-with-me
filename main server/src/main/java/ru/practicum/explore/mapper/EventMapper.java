@@ -1,16 +1,16 @@
 package ru.practicum.explore.mapper;
 
-import ru.practicum.explore.dto.event.EventInDto;
-import ru.practicum.explore.dto.event.EventOutDto;
-import ru.practicum.explore.dto.event.EventPublicOutDto;
+import ru.practicum.explore.dto.event.EventDto;
+import ru.practicum.explore.dto.event.EventFullDto;
+import ru.practicum.explore.dto.event.EventPublicFullDto;
 import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.event.Event;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class EventMapper {
-    public static Event dtoInToEvent(EventInDto eventInDto, Category category) {
+    public static Event dtoInToEvent(EventDto eventInDto, Category category) {
         return Event.builder()
                 .annotation(eventInDto.getAnnotation())
                 .category(category)
@@ -24,8 +24,8 @@ public class EventMapper {
                 .build();
     }
 
-    public static EventOutDto eventToOutDto(Event event) {
-        return EventOutDto.builder()
+    public static EventFullDto eventToOutDto(Event event) {
+        return EventFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.categoryToDtoOut(event.getCategory()))
                 .initiator(UserMapper.userToDto(event.getInitiator()))
@@ -46,17 +46,8 @@ public class EventMapper {
                 .build();
     }
 
-    public static List<EventOutDto> eventToListOutDto(List<Event> listEvents) {
-        List<EventOutDto> eventOutDtoList = new ArrayList<>();
-        for (Event event : listEvents) {
-            eventOutDtoList.add(eventToOutDto(event));
-        }
-        return eventOutDtoList;
-    }
-
-
-    public static EventPublicOutDto eventToPublicOutDto(Event event) {
-        return EventPublicOutDto.builder()
+    public static EventPublicFullDto eventToPublicOutDto(Event event) {
+        return EventPublicFullDto.builder()
                 .annotation(event.getAnnotation())
                 .category(CategoryMapper.categoryToDtoOut(event.getCategory()))
                 .initiator(UserMapper.userToPublicDto(event.getInitiator()))
@@ -77,11 +68,11 @@ public class EventMapper {
                 .build();
     }
 
-    public static List<EventPublicOutDto> eventToPublicListOutDto(List<Event> listEvents) {
-        List<EventPublicOutDto> eventOutDtoList = new ArrayList<>();
-        for (Event event : listEvents) {
-            eventOutDtoList.add(eventToPublicOutDto(event));
-        }
-        return eventOutDtoList;
+    public static List<EventFullDto> eventToListOutDto(List<Event> listEvents) {
+        return listEvents.stream().map(EventMapper::eventToOutDto).collect(Collectors.toList());
+    }
+
+    public static List<EventPublicFullDto> eventToPublicListOutDto(List<Event> listEvents) {
+        return listEvents.stream().map(EventMapper::eventToPublicOutDto).collect(Collectors.toList());
     }
 }

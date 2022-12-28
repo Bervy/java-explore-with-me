@@ -2,10 +2,10 @@ package ru.practicum.explore.dto.event;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ru.practicum.explore.Constants;
+import ru.practicum.explore.utils.Constants;
 import ru.practicum.explore.dto.category.CategoryFullDto;
 import ru.practicum.explore.dto.location.LocationDto;
-import ru.practicum.explore.dto.user.UserPublicDto;
+import ru.practicum.explore.dto.user.UserDto;
 import ru.practicum.explore.model.event.EventState;
 
 import java.time.LocalDateTime;
@@ -15,10 +15,10 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class EventPublicOutDto {
+public class EventFullDto {
     private String annotation;
     private CategoryFullDto category;
-    private UserPublicDto initiator;
+    private UserDto initiator;
     private LocationDto location;
     private String title;
     private Integer confirmedRequests;

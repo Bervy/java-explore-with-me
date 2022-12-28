@@ -1,6 +1,6 @@
 package ru.practicum.explore.utils;
 
-import ru.practicum.explore.dto.event.EventInDto;
+import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.error.NotFoundException;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.repository.CategoryRepository;
@@ -15,7 +15,7 @@ public class Utils {
         }
     }
 
-    public static void setNotNullParamToEntity(EventInDto eventInDto, Event event, CategoryRepository categoriesRepository) {
+    public static void setNotNullParamToEntity(EventDto eventInDto, Event event, CategoryRepository categoriesRepository) {
         if (eventInDto.getCategory() != null) {
             if (!categoriesRepository.existsById(eventInDto.getCategory())) {
                 throw new NotFoundException("Category ID not found.");

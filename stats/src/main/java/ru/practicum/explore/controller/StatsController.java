@@ -20,25 +20,17 @@ public class StatsController {
     private final StatService statService;
 
     @PostMapping("/hit")
-    public void saveHit(@Valid @RequestBody StatInDto statInDto) {
+    public void saveHit(
+            @Valid @RequestBody StatInDto statInDto) {
         statService.saveHit(statInDto);
     }
 
     @GetMapping("/stats")
-    public List<StatOutDto> getHits(@NotNull @RequestParam(name = "start") String start,
-                                    @NotNull @RequestParam(name = "end") String end,
-                                    @Valid
-                                    @RequestParam(name = "uris", defaultValue = "", required = false) List<String> uris,
-                                    @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
+    public List<StatOutDto> getHits(
+            @NotNull @RequestParam(name = "start") String start,
+            @NotNull @RequestParam(name = "end") String end,
+            @Valid @RequestParam(name = "uris", defaultValue = "", required = false) List<String> uris,
+            @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
         return statService.getHits(start, end, uris, unique);
     }
-
-//    @GetMapping("/log")
-//    public List<Stat> getAllHits(@PositiveOrZero
-//                                 @RequestParam(name = "from", defaultValue = "0") Integer from,
-//                                 @Positive
-//                                 @RequestParam(name = "size", defaultValue = "10") Integer size) {
-//        log.info("Stats getAllHits: {},{}", from, size);
-//        return statsService.getAllHits(from, size);
-//    }
 }

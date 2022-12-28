@@ -5,6 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.dto.user.UserDto;
 import ru.practicum.explore.service.admin_part.UserAdminService;
+import ru.practicum.explore.utils.Constants;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
@@ -19,7 +20,8 @@ public class UserAdminController {
     private final UserAdminService userAdminService;
 
     @PostMapping()
-    public UserDto createUser(@Valid @RequestBody UserDto userDto) {
+    public UserDto createUser(
+            @Valid @RequestBody UserDto userDto) {
         return userAdminService.createUser(userDto);
     }
 
@@ -27,14 +29,15 @@ public class UserAdminController {
     public List<UserDto> findAll(
             @RequestParam(name = "ids") Long[] ids,
             @PositiveOrZero
-            @RequestParam(name = "from", defaultValue = "0", required = false) Integer from,
+            @RequestParam(name = "from", defaultValue = Constants.FROM, required = false) Integer from,
             @Positive
-            @RequestParam(name = "size", defaultValue = "10", required = false) Integer size) {
+            @RequestParam(name = "size", defaultValue = Constants.SIZE, required = false) Integer size) {
         return userAdminService.findAll(ids, from, size);
     }
 
     @DeleteMapping("{userId}")
-    public void deleteUser(@Valid @Positive @PathVariable Long userId) {
+    public void deleteUser(
+            @Valid @Positive @PathVariable Long userId) {
         userAdminService.deleteUserById(userId);
     }
 }

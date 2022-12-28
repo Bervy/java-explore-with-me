@@ -11,7 +11,6 @@ import ru.practicum.explore.mapper.CategoryMapper;
 import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.repository.CategoryRepository;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,7 +21,6 @@ public class CategoryPublicService {
     public List<CategoryFullDto> findAllCategories(Integer from, Integer size) {
         Sort sort = Sort.sort(Category.class).by(Category::getName).ascending();
         Pageable pageable = PageRequest.of(from / size, size, sort);
-
         return CategoryMapper.categoryToListDtoOut(categoryRepository.findAll(pageable).toList());
     }
 

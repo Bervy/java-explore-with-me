@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.dto.category.CategoryFullDto;
 import ru.practicum.explore.service.public_part.CategoryPublicService;
+import ru.practicum.explore.utils.Constants;
 
 import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
@@ -21,15 +22,17 @@ public class CategoryPublicController {
     private final CategoryPublicService categoryPublicService;
 
     @GetMapping
-    public List<CategoryFullDto> findAllCategories(@PositiveOrZero
-                                                   @RequestParam(name = "from", defaultValue = "0") Integer from,
-                                                   @Positive
-                                                   @RequestParam(name = "size", defaultValue = "10") Integer size) {
+    public List<CategoryFullDto> findAllCategories(
+            @PositiveOrZero
+            @RequestParam(name = "from", defaultValue = Constants.FROM) Integer from,
+            @Positive
+            @RequestParam(name = "size", defaultValue = Constants.SIZE) Integer size) {
         return categoryPublicService.findAllCategories(from, size);
     }
 
     @GetMapping("{catId}")
-    public CategoryFullDto findCategoryById(@Positive @PathVariable Long catId) {
+    public CategoryFullDto findCategoryById(
+            @Positive @PathVariable Long catId) {
         return categoryPublicService.findCategoryById(catId);
     }
 }

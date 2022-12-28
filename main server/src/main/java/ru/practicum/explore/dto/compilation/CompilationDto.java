@@ -12,7 +12,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CompilationInDto {
+public class CompilationDto {
     @NotBlank
     private String title;
     private List<Long> events;

@@ -1,39 +1,34 @@
 package ru.practicum.explore.mapper;
 
-
+import ru.practicum.explore.dto.category.CategoryDto;
 import ru.practicum.explore.dto.category.CategoryFullDto;
-import ru.practicum.explore.dto.category.CategoryInDto;
 import ru.practicum.explore.model.category.Category;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CategoryMapper {
     public static Category dtoOutToCategory(CategoryFullDto categoryFullDto) {
-        return new Category(
-                categoryFullDto.getId(),
-                categoryFullDto.getName()
-        );
+        return Category.builder()
+                .id(categoryFullDto.getId())
+                .name(categoryFullDto.getName())
+                .build();
     }
 
     public static CategoryFullDto categoryToDtoOut(Category category) {
-        return new CategoryFullDto(
-                category.getId(),
-                category.getName()
-        );
+        return CategoryFullDto.builder()
+                .id(category.getId())
+                .name(category.getName())
+                .build();
     }
 
-    public static Category dtoInToCategory(CategoryInDto categoryInDto) {
-        Category category = new Category();
-        category.setName(categoryInDto.getName());
-        return category;
+    public static Category dtoInToCategory(CategoryDto categoryInDto) {
+        return Category.builder()
+                .name(categoryInDto.getName())
+                .build();
     }
 
     public static List<CategoryFullDto> categoryToListDtoOut(List<Category> listCategories) {
-        List<CategoryFullDto> categoryFullDtoList = new ArrayList<>();
-        for (Category category : listCategories) {
-            categoryFullDtoList.add(categoryToDtoOut(category));
-        }
-        return categoryFullDtoList;
+        return listCategories.stream().map(CategoryMapper::categoryToDtoOut).collect(Collectors.toList());
     }
 }

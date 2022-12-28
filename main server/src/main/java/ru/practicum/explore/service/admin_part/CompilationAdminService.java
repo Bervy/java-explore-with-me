@@ -3,8 +3,8 @@ package ru.practicum.explore.service.admin_part;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.dto.compilation.CompilationInDto;
-import ru.practicum.explore.dto.compilation.CompilationOutDto;
+import ru.practicum.explore.dto.compilation.CompilationDto;
+import ru.practicum.explore.dto.compilation.CompilationFullDto;
 import ru.practicum.explore.error.NotFoundException;
 import ru.practicum.explore.mapper.CompilationMapper;
 import ru.practicum.explore.model.compilation.Compilation;
@@ -19,12 +19,12 @@ public class CompilationAdminService {
     private final CompilationRepository compilationRepository;
 
     @Transactional
-    public CompilationOutDto addCompilation(CompilationInDto compilationInDto) {
+    public CompilationFullDto addCompilation(CompilationDto compilationInDto) {
         Compilation compilation = CompilationMapper.dtoToCompilation(
                 compilationInDto, eventRepository.findAllById(compilationInDto.getEvents())
         );
 
-        return CompilationMapper.compilationToOutDto(compilationRepository.saveAndFlush(compilation));
+        return CompilationMapper.compilationToOutDto(compilationRepository.save(compilation));
     }
 
     public void removeCompilation(Long compId) {
@@ -32,19 +32,19 @@ public class CompilationAdminService {
             throw new NotFoundException("Compilation ID not found.");
         }
         compilationRepository.deleteById(compId);
-        compilationRepository.flush();
     }
 
     @Transactional
     public void removeEventFromCompilation(Long compId, Long eventId) {
-        Compilation compilation = compilationRepository.findById(compId).orElseThrow(
-                () -> new NotFoundException("Compilation ID not found.")
-        );
-        compilation.getEvents().removeIf((e) -> e.getId().equals(eventId));
-        compilationRepository.flush();
+        Compilation compilation = compilationRepository.findById(compId).
+                orElseThrow(() -> new NotFoundException("Compilation ID not found."));
+        Event eventToRemove = compilation.getEvents().stream().filter(e -> e.getId().equals(eventId)).findFirst().
+                orElseThrow(() -> new NotFoundException("Event not found"));
+        compilation.getEvents().remove(eventToRemove);
+        compilationRepository.save(compilation);
     }
 
-    public CompilationOutDto addEventToCompilation(Long compId, Long eventId) {
+    public CompilationFullDto addEventToCompilation(Long compId, Long eventId) {
         Compilation compilation = compilationRepository.findById(compId).orElseThrow(
                 () -> new NotFoundException("Compilation ID not found.")
         );
@@ -52,7 +52,7 @@ public class CompilationAdminService {
                 () -> new NotFoundException("Event ID: " + eventId + " not found.")
         );
         compilation.getEvents().add(event);
-        compilationRepository.flush();
+        compilationRepository.save(compilation);
 
         return CompilationMapper.compilationToOutDto(compilation);
     }
@@ -61,16 +61,14 @@ public class CompilationAdminService {
         setPin(compId, true);
     }
 
-
     public void unPinCompilation(Long compId) {
         setPin(compId, false);
     }
 
     private void setPin(Long compId, boolean pinned) {
-        Compilation compilation = compilationRepository.findById(compId).orElseThrow(
-                () -> new NotFoundException("Compilation ID not found.")
-        );
+        Compilation compilation = compilationRepository.findById(compId).
+                orElseThrow(() -> new NotFoundException("Compilation ID not found."));
         compilation.setPinned(pinned);
-        compilationRepository.flush();
+        compilationRepository.save(compilation);
     }
 }

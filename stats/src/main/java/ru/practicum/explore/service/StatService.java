@@ -1,8 +1,6 @@
 package ru.practicum.explore.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,9 +27,9 @@ public class StatService {
     }
 
     public List<StatOutDto> getHits(String start, String end, List<String> uris, Boolean unique) {
-        List<StatOutDto> stats = List.of();
-        if (uris.size() == 0) {
-            if (unique) {
+        List<StatOutDto> stats;
+        if (uris.isEmpty()) {
+            if (Boolean.TRUE.equals(unique)) {
                 stats = statsRepository.countByTimestampUniqueIp(
                         LocalDateTime.parse(start, Constants.DATE_TIME_SPACE),
                         LocalDateTime.parse(end, Constants.DATE_TIME_SPACE));
@@ -41,7 +39,7 @@ public class StatService {
                         LocalDateTime.parse(end, Constants.DATE_TIME_SPACE));
             }
         } else {
-            if (unique) {
+            if (Boolean.TRUE.equals(unique)) {
                 stats = statsRepository.countByTimestampAndListUniqueIp(
                         LocalDateTime.parse(start, Constants.DATE_TIME_SPACE),
                         LocalDateTime.parse(end, Constants.DATE_TIME_SPACE),
@@ -55,9 +53,4 @@ public class StatService {
         }
         return stats;
     }
-
-//    public List<Stat> getAllHits(Integer from, Integer size) {
-//        Pageable pageable = PageRequest.of(from / size, size);
-//        return statsRepository.findAll(pageable).toList();
-//    }
 }

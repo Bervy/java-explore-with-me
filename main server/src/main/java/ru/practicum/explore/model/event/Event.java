@@ -45,24 +45,20 @@ public class Event {
     private String title;
     private Long views;
     private Integer rate = 0;
-
     @ManyToMany
-    @JoinTable(name = "COMPILATIONS_EVENTS",
+    @JoinTable(
+            name = "COMPILATIONS_EVENTS",
             joinColumns = @JoinColumn(name = "EVENT_ID"),
             inverseJoinColumns = @JoinColumn(name = "COMPILATION_ID"))
     private List<Compilation> compilations;
-
     @Enumerated(EnumType.STRING)
     private EventState state;
-
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
     @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location location;
-
     @ManyToOne
     @JoinColumn(name = "initiator_id")
     private User initiator;

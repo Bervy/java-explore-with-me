@@ -4,31 +4,28 @@ import ru.practicum.explore.dto.user.UserDto;
 import ru.practicum.explore.dto.user.UserPublicDto;
 import ru.practicum.explore.model.user.User;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class UserMapper {
     public static UserDto userToDto(User user) {
-        return new UserDto(
-                user.getId(),
-                user.getName(),
-                user.getEmail(),
-                user.getRate());
+        return UserDto.builder()
+                .id(user.getId())
+                .name(user.getName())
+                .email(user.getEmail())
+                .rate(user.getRate())
+                .build();
     }
 
     public static User dtoToUser(UserDto userDto) {
-        User user = new User();
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        return user;
+        return User.builder()
+                .name(userDto.getName())
+                .email(userDto.getEmail())
+                .build();
     }
 
     public static List<UserDto> userListToDto(List<User> userList) {
-        List<UserDto> userDtoList = new ArrayList<>();
-        for (User user : userList) {
-            userDtoList.add(userToDto(user));
-        }
-        return userDtoList;
+        return userList.stream().map(UserMapper::userToDto).collect(Collectors.toList());
     }
 
     public static UserPublicDto userToPublicDto(User user) {

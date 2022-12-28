@@ -2,7 +2,7 @@ package ru.practicum.explore.service.private_part;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.explore.dto.request.RequestOutDto;
+import ru.practicum.explore.dto.request.RequestFullDto;
 import ru.practicum.explore.error.BadRequestException;
 import ru.practicum.explore.error.NotFoundException;
 import ru.practicum.explore.mapper.RequestMapper;
@@ -25,7 +25,7 @@ public class RequestPrivateService {
     private final UserRepository userRepository;
     private final EventRepository eventRepository;
 
-    public RequestOutDto addRequest(Long userId, Long eventId) {
+    public RequestFullDto addRequest(Long userId, Long eventId) {
         User user = userRepository.findById(userId).orElseThrow(
                 () -> new NotFoundException("User ID not found.")
         );
@@ -41,38 +41,37 @@ public class RequestPrivateService {
         if (event.getParticipantLimit() != 0 && (event.getParticipantLimit() - event.getConfirmedRequests()) <= 0) {
             throw new IllegalStateException("Event don't have any free slot.");
         }
-
         RequestState newRequestState = RequestState.PENDING;
-        if (!event.getRequestModeration()) {
+        if (Boolean.FALSE.equals(event.getRequestModeration())) {
             newRequestState = RequestState.CONFIRMED;
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
         }
-
-        Request request = new Request(
-                null,
-                user,
-                LocalDateTime.now(),
-                newRequestState,
-                event
-        );
-        return RequestMapper.requestToOutDto(requestRepository.saveAndFlush(request));
+        Request request = Request.builder()
+                .requester(user)
+                .created(LocalDateTime.now())
+                .status(newRequestState)
+                .event(event)
+                .build();
+        return RequestMapper.requestToOutDto(requestRepository.save(request));
     }
 
-    public List<RequestOutDto> findAllRequests(Long userId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
+    public List<RequestFullDto> findAllRequests(Long userId) {
+        checkUserExists(userId);
         return RequestMapper.requestsToListOutDto(requestRepository.findAllByRequesterId(userId));
     }
 
-    public RequestOutDto cancelRequest(Long userId, Long requestId) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
+    public RequestFullDto cancelRequest(Long userId, Long requestId) {
+        checkUserExists(userId);
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new NotFoundException("Request ID not found.")
         );
         request.setStatus(RequestState.CANCELED);
         return RequestMapper.requestToOutDto(requestRepository.saveAndFlush(request));
+    }
+
+    private void checkUserExists(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User ID not found.");
+        }
     }
 }

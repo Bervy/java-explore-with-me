@@ -5,7 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import ru.practicum.explore.Constants;
+import ru.practicum.explore.utils.Constants;
 import ru.practicum.explore.dto.location.LocationDto;
 
 import javax.validation.constraints.NotBlank;
@@ -18,19 +18,19 @@ import java.time.LocalDateTime;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EventInDto {
+public class EventDto {
     private Long eventId;
     @NotBlank
-    @Size(min = 20, max = 2000)
+    @Size(min = 10, max = 1000)
     private String annotation;
     @Positive
     private Long category;
     @NotBlank
-    @Size(min = 20, max = 7000)
+    @Size(min = 10, max = 3000)
     private String description;
     private LocationDto location;
     @NotBlank
-    @Size(min = 3, max = 120)
+    @Size(min = 3, max = 100)
     private String title;
     @NotNull
     @JsonFormat(pattern = Constants.DATE_TIME_STRING)
@@ -39,16 +39,4 @@ public class EventInDto {
     @Positive
     private Integer participantLimit;
     private Boolean requestModeration;
-
-    public EventInDto(String annotation, Long category, String description, LocationDto location, String title, String eventDate, Boolean paid, Integer participantLimit, Boolean requestModeration) {
-        this.annotation = annotation;
-        this.category = category;
-        this.description = description;
-        this.location = location;
-        this.title = title;
-        this.eventDate = LocalDateTime.parse(eventDate, Constants.DATE_TIME_SPACE);
-        this.paid = paid;
-        this.participantLimit = participantLimit;
-        this.requestModeration = requestModeration;
-    }
 }

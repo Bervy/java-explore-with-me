@@ -3,7 +3,7 @@ package ru.practicum.explore.service.private_part;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.dto.request.RequestOutDto;
+import ru.practicum.explore.dto.request.RequestFullDto;
 import ru.practicum.explore.error.NotFoundException;
 import ru.practicum.explore.mapper.RequestMapper;
 import ru.practicum.explore.model.event.Event;
@@ -20,14 +20,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserEventRequestPrivateService {
     private final RequestRepository requestRepository;
-    private final UserRepository usersRepository;
-    private final EventRepository eventsRepository;
+    private final UserRepository userRepository;
+    private final EventRepository eventRepository;
 
     @Transactional
-    public RequestOutDto confirmRequest(Long userId, Long eventId, Long requestId) throws AccessDeniedException {
-        if (!usersRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
+    public RequestFullDto confirmRequest(Long userId, Long eventId, Long requestId) throws AccessDeniedException {
+        checkUserExists(userId);
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new NotFoundException("Request ID not found.")
         );
@@ -49,16 +47,14 @@ public class UserEventRequestPrivateService {
         if (request.getStatus() == RequestState.PENDING) {
             request.setStatus(RequestState.CONFIRMED);
             event.setConfirmedRequests(event.getConfirmedRequests() + 1);
-            requestRepository.saveAndFlush(request);
+            requestRepository.save(request);
         }
 
         return RequestMapper.requestToOutDto(request);
     }
 
-    public RequestOutDto rejectRequest(Long userId, Long eventId, Long requestId) throws AccessDeniedException {
-        if (!usersRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
+    public RequestFullDto rejectRequest(Long userId, Long eventId, Long requestId) throws AccessDeniedException {
+        checkUserExists(userId);
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new NotFoundException("Request ID not found.")
         );
@@ -69,16 +65,20 @@ public class UserEventRequestPrivateService {
             throw new AccessDeniedException("Only owner of Event can Reject Request.");
         }
         request.setStatus(RequestState.REJECTED);
-        return RequestMapper.requestToOutDto(requestRepository.saveAndFlush(request));
+        return RequestMapper.requestToOutDto(requestRepository.save(request));
     }
 
-    public List<RequestOutDto> findAllEventRequests(Long userId, Long eventId) {
-        if (!usersRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
-        if (!eventsRepository.existsById(eventId)) {
+    public List<RequestFullDto> findAllEventRequests(Long userId, Long eventId) {
+        checkUserExists(userId);
+        if (!eventRepository.existsById(eventId)) {
             throw new NotFoundException("Event ID not found.");
         }
         return RequestMapper.requestsToListOutDto(requestRepository.findAllByInitiatorIdAndEventId(userId, eventId));
+    }
+
+    private void checkUserExists(Long userId) {
+        if (!userRepository.existsById(userId)) {
+            throw new NotFoundException("User ID not found.");
+        }
     }
 }

@@ -1,11 +1,8 @@
 package ru.practicum.explore.model.request;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import ru.practicum.explore.Constants;
+import lombok.*;
+import ru.practicum.explore.utils.Constants;
 import ru.practicum.explore.model.user.User;
 import ru.practicum.explore.model.event.Event;
 
@@ -18,6 +15,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class Request {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

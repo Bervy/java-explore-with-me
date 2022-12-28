@@ -1,37 +1,32 @@
 package ru.practicum.explore.mapper;
 
-import ru.practicum.explore.dto.compilation.CompilationInDto;
-import ru.practicum.explore.dto.compilation.CompilationOutDto;
+import ru.practicum.explore.dto.compilation.CompilationDto;
+import ru.practicum.explore.dto.compilation.CompilationFullDto;
 import ru.practicum.explore.model.compilation.Compilation;
 import ru.practicum.explore.model.event.Event;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CompilationMapper {
-    public static Compilation dtoToCompilation(CompilationInDto compilationInDto, List<Event> events) {
-        return new Compilation(
-                null,
-                compilationInDto.getTitle(),
-                compilationInDto.getPinned(),
-                events
-        );
+    public static Compilation dtoToCompilation(CompilationDto compilationInDto, List<Event> events) {
+        return Compilation.builder()
+                .title(compilationInDto.getTitle())
+                .pinned(compilationInDto.getPinned())
+                .events(events)
+                .build();
     }
 
-    public static CompilationOutDto compilationToOutDto(Compilation compilation) {
-        return new CompilationOutDto(
-                compilation.getId(),
-                compilation.getTitle(),
-                EventMapper.eventToListOutDto(compilation.getEvents()),
-                compilation.getPinned()
-        );
+    public static CompilationFullDto compilationToOutDto(Compilation compilation) {
+        return CompilationFullDto.builder()
+                .id(compilation.getId())
+                .title(compilation.getTitle())
+                .events(EventMapper.eventToListOutDto(compilation.getEvents()))
+                .pinned(compilation.getPinned())
+                .build();
     }
 
-    public static List<CompilationOutDto> compilationToListOutDto(List<Compilation> compilationList) {
-        List<CompilationOutDto> compilationOutDtoList = new ArrayList<>();
-        for (Compilation compilation : compilationList) {
-            compilationOutDtoList.add(compilationToOutDto(compilation));
-        }
-        return compilationOutDtoList;
+    public static List<CompilationFullDto> compilationToListOutDto(List<Compilation> compilationList) {
+        return compilationList.stream().map(CompilationMapper::compilationToOutDto).collect(Collectors.toList());
     }
 }

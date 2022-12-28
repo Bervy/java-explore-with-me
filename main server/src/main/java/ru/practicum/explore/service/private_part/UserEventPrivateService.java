@@ -6,22 +6,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.Constants;
-import ru.practicum.explore.dto.event.EventInDto;
-import ru.practicum.explore.dto.event.EventOutDto;
+import ru.practicum.explore.dto.event.EventDto;
+import ru.practicum.explore.dto.event.EventFullDto;
 import ru.practicum.explore.error.ConflictException;
 import ru.practicum.explore.error.NotFoundException;
 import ru.practicum.explore.mapper.EventMapper;
+import ru.practicum.explore.model.category.Category;
 import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.EventState;
+import ru.practicum.explore.model.user.User;
 import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.repository.EventRepository;
 import ru.practicum.explore.repository.UserRepository;
 import ru.practicum.explore.utils.Utils;
 
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 import java.util.List;
+
+import static ru.practicum.explore.service.admin_part.EventAdminService.getEventFullDto;
 
 @Service
 @RequiredArgsConstructor
@@ -29,169 +31,74 @@ public class UserEventPrivateService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-//    private final LikeRepository likeRepository;
-//    private final RequestRepository requestRepository;
-//
+    private static final int USER_TIME_HOUR_BEFORE_START = 2;
+
     @Transactional
-    public EventOutDto addEvent(Long userId, EventInDto eventInDto) {
-        if (!categoryRepository.existsById(eventInDto.getCategory())) {
-            throw new NotFoundException("Category ID not found.");
-        }
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
+    public EventFullDto addEvent(Long userId, EventDto eventInDto) {
+        Category category = getCategoryFromRepository(eventInDto.getCategory());
+        User user = getUserFromRepository(userId);
         if (eventInDto.getLocation() == null) {
             throw new InvalidParameterException("Location is null.");
         }
         if (eventInDto.getPaid() == null) {
             throw new InvalidParameterException("Paid is null.");
         }
-        Utils.checkTimeBeforeOrThrow(eventInDto.getEventDate(), Constants.USER_TIME_HOUR_BEFORE_START);
-
-        Event event = EventMapper.dtoInToEvent(eventInDto, categoryRepository.getReferenceById(eventInDto.getCategory()));
-        event.setInitiator(userRepository.getReferenceById(userId));
+        Utils.checkTimeBeforeOrThrow(eventInDto.getEventDate(), USER_TIME_HOUR_BEFORE_START);
+        Event event = EventMapper.dtoInToEvent(eventInDto, category);
+        event.setInitiator(user);
         event.setState(EventState.PENDING);
         event.setConfirmedRequests(0);
         event.setViews(0L);
-        return EventMapper.eventToOutDto(eventRepository.saveAndFlush(event));
+        return EventMapper.eventToOutDto(eventRepository.save(event));
     }
 
     @Transactional
-    public EventOutDto updateEvent(Long userId, EventInDto eventInDto) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
-        Event event = eventRepository.findById(eventInDto.getEventId()).orElseThrow(
-                () -> new NotFoundException("Event ID not found.")
-        );
-
+    public EventFullDto updateEvent(Long userId, EventDto eventInDto) {
+        checkUserExists(userId);
+        Event event = getEventFromRepository(eventInDto.getEventId());
         if (event.getState() == EventState.PUBLISHED) {
             throw new ConflictException("Event is published.");
         } else if (event.getState() == EventState.CANCELED) {
             event.setState(EventState.PENDING);
         }
-
-        if (eventInDto.getEventDate() != null) {
-            event.setEventDate(eventInDto.getEventDate());
-        }
-        Utils.checkTimeBeforeOrThrow(event.getEventDate(), Constants.USER_TIME_HOUR_BEFORE_START);
+        Utils.checkTimeBeforeOrThrow(event.getEventDate(), USER_TIME_HOUR_BEFORE_START);
         Utils.setNotNullParamToEntity(eventInDto, event, categoryRepository);
-
         return EventMapper.eventToOutDto(eventRepository.saveAndFlush(event));
     }
 
-    public List<EventOutDto> findAllEvents(Long userId, Integer from, Integer size) {
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
+    public List<EventFullDto> findAllEvents(Long userId, Integer from, Integer size) {
+        checkUserExists(userId);
         Sort sort = Sort.sort(Event.class).by(Event::getEventDate).descending();
         Pageable pageable = PageRequest.of(from / size, size, sort);
         return EventMapper.eventToListOutDto(eventRepository.findAllByInitiatorId(userId, pageable));
     }
 
-    public EventOutDto getEvent(Long userId, Long eventId){
-        if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
-        }
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event ID not found.")
-        );
-
+    public EventFullDto getEvent(Long userId, Long eventId){
+        checkUserExists(userId);
+        Event event = getEventFromRepository(eventId);
         return EventMapper.eventToOutDto(event);
     }
 
-    public EventOutDto cancelEvent(Long userId, Long eventId){
+    public EventFullDto cancelEvent(Long userId, Long eventId){
+        checkUserExists(userId);
+        return getEventFullDto(eventId, eventRepository);
+    }
+
+    private void checkUserExists(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException("User ID not found.");
         }
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event ID not found.")
-        );
-        if (event.getState() != EventState.PENDING) {
-            throw new ConflictException("Event is not pending.");
-        }
-        event.setState(EventState.CANCELED);
-
-        return EventMapper.eventToOutDto(eventRepository.saveAndFlush(event));
     }
-//
-//    @Transactional
-//    public void addLike(Long userId, Long eventId, LikeType likeType) throws AccessDeniedException {
-//        Event event = getEvent(eventId);
-//        checkUser(userId, event);
-//        if (!requestRepository.existsByRequesterIdAndEventIdAndStatus(userId, eventId, RequestState.CONFIRMED)) {
-//            throw new AccessDeniedException("Запрещено оценивать событие в которых не участвуешь.");
-//        }
-//
-//        Optional<Like> like = likeRepository.findByEventIdAndUserId(userId, eventId);
-//        if (like.isPresent()) {
-//            if (like.get().getType() != likeType) {
-//                LikeType deleteType = LikeType.LIKE;
-//                if (likeType == LikeType.LIKE) {
-//                    deleteType = LikeType.DISLIKE;
-//                }
-//                removeLike(userId, eventId, deleteType);
-//            } else {
-//                throw new ConflictException("Можно поставить только один раз.");
-//            }
-//        }
-//        likeRepository.saveAndFlush(new Like(null, userId, eventId, likeType));
-//        if (likeType == LikeType.LIKE) {
-//            eventRepository.incrementRate(eventId);
-//        } else {
-//            eventRepository.decrementRate(eventId);
-//        }
-//
-//        User initiator = event.getInitiator();
-//        initiator.setRate(getRate(initiator.getId()));
-//        userRepository.save(initiator);
-//    }
-//
-//    @Transactional
-//    public void removeLike(Long userId, Long eventId, LikeType likeType) throws AccessDeniedException {
-//        Event event = getEvent(eventId);
-//        checkUser(userId, event);
-//
-//        Like like = likeRepository.findByUserIdAndEventIdAndType(userId, eventId, likeType)
-//                .orElseThrow(
-//                        () -> new NotFoundException(likeType + " not found.")
-//                );
-//        likeRepository.delete(like);
-//
-//        if (likeType == LikeType.LIKE) {
-//            eventRepository.decrementRate(eventId);
-//        } else {
-//            eventRepository.incrementRate(eventId);
-//        }
-//
-//        User initiator = event.getInitiator();
-//        initiator.setRate(getRate(initiator.getId()));
-//        userRepository.save(initiator);
-//    }
-//
-//    private Float getRate(Long userId) {
-//        int count = eventRepository.countByInitiatorId(userId);
-//        long rate = eventRepository.sumRateByInitiatorId(userId);
-//
-//        return count == 0 ? 0.0F : (1.0F * rate / count);
-//    }
-//
-//    private void checkUser(Long userId, Event event) throws AccessDeniedException {
-//        if (!userRepository.existsById(userId)) {
-//            throw new NotFoundException("User ID not found.");
-//        }
-//        if (userId.equals(event.getInitiator().getId())) {
-//            throw new AccessDeniedException("Запрещено оценивать собственное событие.");
-//        }
-//    }
-//
-//    private Event getEvent(Long eventId) throws AccessDeniedException {
-//        Event event = eventRepository.findById(eventId).orElseThrow(
-//                () -> new NotFoundException("Event ID not found.")
-//        );
-//        if (event.getState() != EventState.PUBLISHED) {
-//            throw new AccessDeniedException("Можно оценивать только опубликованные события.");
-//        }
-//        return event;
-//    }
+
+    private Event getEventFromRepository(Long eventId) {
+        return eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event ID not found."));
+    }
+
+    private User getUserFromRepository(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User ID not found."));
+    }
+
+    private Category getCategoryFromRepository(Long categoryId) {
+        return categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Category ID not found."));
+    }
 }

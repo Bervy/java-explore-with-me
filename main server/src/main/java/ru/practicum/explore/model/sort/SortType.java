@@ -1,5 +1,6 @@
 package ru.practicum.explore.model.sort;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 public enum SortType {
@@ -8,11 +9,6 @@ public enum SortType {
     RATE;
 
     public static Optional<SortType> from(String stringType) {
-        for (SortType type : values()) {
-            if (type.name().equalsIgnoreCase(stringType)) {
-                return Optional.of(type);
-            }
-        }
-        return Optional.empty();
+        return Arrays.stream(values()).filter(s1 -> s1.name().equalsIgnoreCase(stringType)).findFirst();
     }
 }

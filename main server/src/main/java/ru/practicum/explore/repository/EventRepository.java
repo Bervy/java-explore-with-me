@@ -23,9 +23,10 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     )
     List<Event> findAllByUsersAndStatesAndCategories(Long[] users, List<EventState> states, Long[] categories, LocalDateTime startDate, LocalDateTime endDate, Pageable pageable);
 
-    Boolean existsByCategoryId(Long catId);
+    boolean existsByCategoryId(Long catId);
+
     Optional<Event> findByIdAndState(Long eventId, EventState published);
-//
+
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional
     @Query("UPDATE Event e " +
@@ -52,26 +53,4 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                LocalDateTime rangeEnd,
                                Boolean onlyAvailable,
                                Pageable pageable);
-//
-//
-//    int countByInitiatorId(Long userId);
-//
-//    @Query("SELECT SUM(e.rate) FROM Event e " +
-//            " WHERE e.initiator.id = :userId"
-//    )
-//    long sumRateByInitiatorId(Long userId);
-//
-//    @Modifying(clearAutomatically = true, flushAutomatically = true)
-//    @Transactional
-//    @Query("UPDATE Event e " +
-//            " SET e.rate = e.rate + 1 " +
-//            " WHERE e.id = :eventId")
-//    void incrementRate(Long eventId);
-//
-//    @Modifying(clearAutomatically = true, flushAutomatically = true)
-//    @Transactional
-//    @Query("UPDATE Event e " +
-//            " SET e.rate = e.rate - 1 " +
-//            " WHERE e.id = :eventId")
-//    void decrementRate(Long eventId);
 }

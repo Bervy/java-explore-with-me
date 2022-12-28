@@ -1,4 +1,4 @@
-package ru.practicum.explore.utils;
+package ru.practicum.explore.utils.stats;
 
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
@@ -33,10 +33,6 @@ public class BaseClient {
         }
 
         return responseBuilder.build();
-    }
-
-    protected ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
-        return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
     }
 
     protected <T> ResponseEntity<Object> post(String path, T body) {

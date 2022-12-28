@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryInDto {
+public class CategoryDto {
     @NotBlank
     private String name;
 }
