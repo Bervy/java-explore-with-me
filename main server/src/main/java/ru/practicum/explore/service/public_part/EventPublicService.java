@@ -78,13 +78,11 @@ public class EventPublicService {
     }
 
     private void sendHitStat(HttpServletRequest request) {
-        Thread sendHit = new Thread(
-                () -> adminStatClient.saveHit(StatFullDto.builder()
-                        .app(APP_NAME)
-                        .uri(request.getRequestURI())
-                        .ip(request.getRemoteAddr())
-                        .timestamp(LocalDateTime.now())
-                        .build()));
-        sendHit.start();
+        adminStatClient.saveHit(StatFullDto.builder()
+                .app(APP_NAME)
+                .uri(request.getRequestURI())
+                .ip(request.getRemoteAddr())
+                .timestamp(LocalDateTime.now())
+                .build());
     }
 }
