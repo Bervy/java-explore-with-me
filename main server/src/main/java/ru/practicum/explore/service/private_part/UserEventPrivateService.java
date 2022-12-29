@@ -30,6 +30,7 @@ import static ru.practicum.explore.service.admin_part.EventAdminService.getEvent
 @Service
 @RequiredArgsConstructor
 public class UserEventPrivateService implements UserEventPrivateController {
+
     private static final int USER_TIME_HOUR_BEFORE_START = 2;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;

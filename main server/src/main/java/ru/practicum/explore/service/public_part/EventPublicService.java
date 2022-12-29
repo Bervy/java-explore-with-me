@@ -28,6 +28,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.UNKNOWN_TYPE_OF_S
 @Service
 @RequiredArgsConstructor
 public class EventPublicService implements EventPublicController {
+
     private static final String APP_NAME = "main service";
     private static final int ONE_HUNDRED_YEARS_AFTER_NOW = 100;
     private final EventRepository eventRepository;

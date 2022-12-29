@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class UserAdminControllerImpl implements UserAdminController {
+
     private final UserAdminService userAdminService;
 
     @PostMapping()

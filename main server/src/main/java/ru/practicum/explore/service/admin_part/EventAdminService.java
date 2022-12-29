@@ -29,6 +29,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 @Service
 @RequiredArgsConstructor
 public class EventAdminService implements EventAdminController {
+
     private static final int ADMIN_TIME_HOUR_BEFORE_START = 1;
     private static final int ONE_HUNDRED_YEARS_AFTER_NOW = 100;
     private final EventRepository eventRepository;

@@ -17,6 +17,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.COMPILATION_NOT_F
 @Service
 @RequiredArgsConstructor
 public class CompilationPublicService implements CompilationPublicController {
+
     private final CompilationRepository compilationRepository;
 
     @Override

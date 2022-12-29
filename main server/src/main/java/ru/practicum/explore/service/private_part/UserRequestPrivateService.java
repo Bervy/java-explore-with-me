@@ -24,6 +24,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 @Service
 @RequiredArgsConstructor
 public class UserRequestPrivateService implements UserRequestPrivateController {
+
     private final RequestRepository requestRepository;
     private final UserRepository userRepository;
     private final EventRepository eventRepository;

@@ -20,6 +20,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 @Service
 @RequiredArgsConstructor
 public class CategoryAdminService implements CategoryAdminController {
+
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
 

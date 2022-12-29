@@ -15,6 +15,7 @@ import java.nio.file.AccessDeniedException;
 @RequiredArgsConstructor
 @Validated
 public class CategoryAdminControllerImpl implements CategoryAdminController {
+
     private final CategoryAdminService categoryAdminService;
 
     @PatchMapping

@@ -13,6 +13,7 @@ import ru.practicum.explore.service.admin_part.CompilationAdminService;
 @RequiredArgsConstructor
 @Validated
 public class CompilationAdminControllerImpl implements CompilationAdminController {
+
     private final CompilationAdminService compilationAdminService;
 
     @PostMapping

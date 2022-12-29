@@ -18,6 +18,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 @Service
 @RequiredArgsConstructor
 public class CompilationAdminService implements CompilationAdminController {
+
     private final EventRepository eventRepository;
     private final CompilationRepository compilationRepository;
 

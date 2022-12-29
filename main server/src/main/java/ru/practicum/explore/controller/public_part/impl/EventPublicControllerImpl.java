@@ -13,6 +13,7 @@ import java.util.List;
 @RequestMapping(path = "/events")
 @RequiredArgsConstructor
 public class EventPublicControllerImpl implements EventPublicController {
+
     private final EventPublicService eventPublicService;
 
     @GetMapping

@@ -14,6 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class UserRequestPrivateControllerImpl implements UserRequestPrivateController {
+
     private final UserRequestPrivateService requestsService;
 
     @PostMapping

@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class UserEventPrivateControllerImpl implements UserEventPrivateController {
+
     private final UserEventPrivateService userEventPrivateService;
 
     @PostMapping

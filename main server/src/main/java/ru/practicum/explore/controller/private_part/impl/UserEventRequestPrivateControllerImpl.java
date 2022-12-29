@@ -15,6 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Validated
 public class UserEventRequestPrivateControllerImpl implements UserEventRequestPrivateController {
+
     private final UserEventRequestPrivateService userEventRequestPrivateService;
 
     @GetMapping("{eventId}/requests")

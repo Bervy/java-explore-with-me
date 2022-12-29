@@ -18,6 +18,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 @Service
 @RequiredArgsConstructor
 public class UserAdminService implements UserAdminController {
+
     private final UserRepository userRepository;
 
     @Override
