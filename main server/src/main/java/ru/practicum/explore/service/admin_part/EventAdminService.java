@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.utils.Constants;
 import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.dto.event.EventFullDto;
 import ru.practicum.explore.error.ConflictException;
@@ -16,6 +15,7 @@ import ru.practicum.explore.model.event.Event;
 import ru.practicum.explore.model.event.EventState;
 import ru.practicum.explore.repository.CategoryRepository;
 import ru.practicum.explore.repository.EventRepository;
+import ru.practicum.explore.utils.Constants;
 import ru.practicum.explore.utils.EventSearchParameters;
 import ru.practicum.explore.utils.Utils;
 
@@ -27,10 +27,25 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class EventAdminService {
-    private final EventRepository eventRepository;
-    private final CategoryRepository categoryRepository;
     private static final int ADMIN_TIME_HOUR_BEFORE_START = 1;
     private static final int ONE_HUNDRED_YEARS_AFTER_NOW = 100;
+    private final EventRepository eventRepository;
+    private final CategoryRepository categoryRepository;
+
+    private static EventState stringToEventState(String state) {
+        return EventState.valueOf(state);
+    }
+
+    public static EventFullDto getEventFullDto(Long eventId, EventRepository eventRepository) {
+        Event event = eventRepository.findById(eventId).orElseThrow(
+                () -> new NotFoundException("Event ID not found.")
+        );
+        if (event.getState() != EventState.PENDING) {
+            throw new ConflictException("Event is not pending.");
+        }
+        event.setState(EventState.CANCELED);
+        return EventMapper.eventToOutDto(eventRepository.save(event));
+    }
 
     public List<EventFullDto> findAllEvents(EventSearchParameters eventSearchParameters) {
         List<EventState> stateList = eventSearchParameters.getStates() == null ? List.of() :
@@ -73,7 +88,7 @@ public class EventAdminService {
     @Transactional
     public EventFullDto updateEvent(Long eventId, EventDto eventInDto) {
         Event event = eventRepository.findById(eventId)
-                        .orElseThrow(() -> new NotFoundException("Event ID not found."));
+                .orElseThrow(() -> new NotFoundException("Event ID not found."));
         Utils.setNotNullParamToEntity(eventInDto, event, categoryRepository);
         event.setEventDate(eventInDto.getEventDate());
         return EventMapper.eventToOutDto(eventRepository.save(event));
@@ -82,23 +97,8 @@ public class EventAdminService {
     private List<EventState> getCorrectStates(String[] states) {
         try {
             return Arrays.stream(states).map(EventAdminService::stringToEventState).collect(Collectors.toList());
-        } catch(IllegalArgumentException err) {
+        } catch (IllegalArgumentException err) {
             throw new IllegalArgumentException("State not found.");
         }
-    }
-
-    private static EventState stringToEventState(String state) {
-        return EventState.valueOf(state);
-    }
-
-    public static EventFullDto getEventFullDto(Long eventId, EventRepository eventRepository) {
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException("Event ID not found.")
-        );
-        if (event.getState() != EventState.PENDING) {
-            throw new ConflictException("Event is not pending.");
-        }
-        event.setState(EventState.CANCELED);
-        return EventMapper.eventToOutDto(eventRepository.save(event));
     }
 }

@@ -21,7 +21,7 @@ public class UserAdminService {
     public UserDto createUser(UserDto userDto) {
         try {
             return UserMapper.userToDto(userRepository.save(UserMapper.dtoToUser(userDto)));
-        } catch(DataAccessException dataAccessException) {
+        } catch (DataAccessException dataAccessException) {
             throw new ConflictException("123");
         }
     }

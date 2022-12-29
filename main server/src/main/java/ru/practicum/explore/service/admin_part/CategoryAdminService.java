@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.dto.category.CategoryFullDto;
 import ru.practicum.explore.dto.category.CategoryDto;
+import ru.practicum.explore.dto.category.CategoryFullDto;
 import ru.practicum.explore.error.ConflictException;
 import ru.practicum.explore.error.NotFoundException;
 import ru.practicum.explore.mapper.CategoryMapper;
@@ -53,7 +53,7 @@ public class CategoryAdminService {
         Category categoryFromDb;
         try {
             categoryFromDb = categoryRepository.save(category);
-        } catch(DataAccessException dataAccessException) {
+        } catch (DataAccessException dataAccessException) {
             throw new ConflictException("123");
         }
         return categoryFromDb;
