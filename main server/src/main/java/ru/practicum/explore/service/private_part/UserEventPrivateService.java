@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.explore.controller.private_part.UserEventPrivateController;
 import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.dto.event.EventFullDto;
 import ru.practicum.explore.error.ConflictException;
@@ -23,25 +24,27 @@ import ru.practicum.explore.utils.Utils;
 import java.security.InvalidParameterException;
 import java.util.List;
 
+import static ru.practicum.explore.error.ExceptionDescriptions.*;
 import static ru.practicum.explore.service.admin_part.EventAdminService.getEventFullDto;
 
 @Service
 @RequiredArgsConstructor
-public class UserEventPrivateService {
+public class UserEventPrivateService implements UserEventPrivateController {
+    private static final int USER_TIME_HOUR_BEFORE_START = 2;
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
-    private static final int USER_TIME_HOUR_BEFORE_START = 2;
 
     @Transactional
+    @Override
     public EventFullDto addEvent(Long userId, EventDto eventInDto) {
         Category category = getCategoryFromRepository(eventInDto.getCategory());
         User user = getUserFromRepository(userId);
         if (eventInDto.getLocation() == null) {
-            throw new InvalidParameterException("Location is null.");
+            throw new InvalidParameterException(LOCATION_IS_NULL.getTitle());
         }
         if (eventInDto.getPaid() == null) {
-            throw new InvalidParameterException("Paid is null.");
+            throw new InvalidParameterException(PAID_IS_NULL.getTitle());
         }
         Utils.checkTimeBeforeOrThrow(eventInDto.getEventDate(), USER_TIME_HOUR_BEFORE_START);
         Event event = EventMapper.dtoInToEvent(eventInDto, category);
@@ -53,11 +56,12 @@ public class UserEventPrivateService {
     }
 
     @Transactional
+    @Override
     public EventFullDto updateEvent(Long userId, EventDto eventInDto) {
         checkUserExists(userId);
         Event event = getEventFromRepository(eventInDto.getEventId());
         if (event.getState() == EventState.PUBLISHED) {
-            throw new ConflictException("Event is published.");
+            throw new ConflictException(EVENT_IS_PUBLISHED.getTitle());
         } else if (event.getState() == EventState.CANCELED) {
             event.setState(EventState.PENDING);
         }
@@ -66,6 +70,7 @@ public class UserEventPrivateService {
         return EventMapper.eventToOutDto(eventRepository.saveAndFlush(event));
     }
 
+    @Override
     public List<EventFullDto> findAllEvents(Long userId, Integer from, Integer size) {
         checkUserExists(userId);
         Sort sort = Sort.sort(Event.class).by(Event::getEventDate).descending();
@@ -73,12 +78,14 @@ public class UserEventPrivateService {
         return EventMapper.eventToListOutDto(eventRepository.findAllByInitiatorId(userId, pageable));
     }
 
+    @Override
     public EventFullDto getEvent(Long userId, Long eventId) {
         checkUserExists(userId);
         Event event = getEventFromRepository(eventId);
         return EventMapper.eventToOutDto(event);
     }
 
+    @Override
     public EventFullDto cancelEvent(Long userId, Long eventId) {
         checkUserExists(userId);
         return getEventFullDto(eventId, eventRepository);
@@ -86,19 +93,22 @@ public class UserEventPrivateService {
 
     private void checkUserExists(Long userId) {
         if (!userRepository.existsById(userId)) {
-            throw new NotFoundException("User ID not found.");
+            throw new NotFoundException(USER_NOT_FOUND.getTitle());
         }
     }
 
     private Event getEventFromRepository(Long eventId) {
-        return eventRepository.findById(eventId).orElseThrow(() -> new NotFoundException("Event ID not found."));
+        return eventRepository.findById(eventId)
+                .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
     }
 
     private User getUserFromRepository(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User ID not found."));
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException(USER_NOT_FOUND.getTitle()));
     }
 
     private Category getCategoryFromRepository(Long categoryId) {
-        return categoryRepository.findById(categoryId).orElseThrow(() -> new NotFoundException("Category ID not found."));
+        return categoryRepository.findById(categoryId)
+                .orElseThrow(() -> new NotFoundException(CATEGORY_NOT_FOUND.getTitle()));
     }
 }
