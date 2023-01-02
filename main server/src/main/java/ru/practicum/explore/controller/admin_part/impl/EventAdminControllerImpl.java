@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.admin_part.EventAdminController;
 import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.dto.event.EventFullDto;
-import ru.practicum.explore.service.admin_part.EventAdminService;
+import ru.practicum.explore.service.admin_part.impl.EventAdminServiceImpl;
 import ru.practicum.explore.utils.Constants;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @Validated
 public class EventAdminControllerImpl implements EventAdminController {
 
-    private final EventAdminService eventAdminService;
+    private final EventAdminServiceImpl eventAdminService;
 
     @GetMapping
     @Override

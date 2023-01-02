@@ -7,9 +7,14 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.explore.model.request.Request;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface RequestRepository extends JpaRepository<Request, Long> {
     List<Request> findAllByRequesterId(Long userId);
+
+    Optional<Request> findByRequesterIdAndEventId(Long userId, Long eventId);
+
+    Optional<Request> findByIdAndRequesterId(Long userId, Long eventId);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Transactional

@@ -5,9 +5,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.private_part.UserEventRequestPrivateController;
 import ru.practicum.explore.dto.request.RequestFullDto;
-import ru.practicum.explore.service.private_part.UserEventRequestPrivateService;
+import ru.practicum.explore.service.private_part.impl.UserEventRequestPrivateServiceImpl;
 
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @RestController
@@ -16,7 +15,7 @@ import java.util.List;
 @Validated
 public class UserEventRequestPrivateControllerImpl implements UserEventRequestPrivateController {
 
-    private final UserEventRequestPrivateService userEventRequestPrivateService;
+    private final UserEventRequestPrivateServiceImpl userEventRequestPrivateService;
 
     @GetMapping("{eventId}/requests")
     @Override
@@ -31,7 +30,7 @@ public class UserEventRequestPrivateControllerImpl implements UserEventRequestPr
     public RequestFullDto confirmRequest(
             @PathVariable Long userId,
             @PathVariable Long eventId,
-            @PathVariable Long reqId) throws AccessDeniedException {
+            @PathVariable Long reqId) {
         return userEventRequestPrivateService.confirmRequest(userId, eventId, reqId);
     }
 
@@ -40,7 +39,7 @@ public class UserEventRequestPrivateControllerImpl implements UserEventRequestPr
     public RequestFullDto rejectRequest(
             @PathVariable Long userId,
             @PathVariable Long eventId,
-            @PathVariable Long reqId) throws AccessDeniedException {
+            @PathVariable Long reqId) {
         return userEventRequestPrivateService.rejectRequest(userId, eventId, reqId);
     }
 }

@@ -13,6 +13,7 @@ import javax.persistence.*;
 @Builder
 public class Location {
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Float lat;

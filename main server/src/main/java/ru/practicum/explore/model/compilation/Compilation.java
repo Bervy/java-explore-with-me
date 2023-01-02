@@ -17,6 +17,7 @@ import java.util.Objects;
 @Builder
 public class Compilation {
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String title;

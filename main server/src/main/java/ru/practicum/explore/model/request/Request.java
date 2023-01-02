@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 public class Request {
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne()

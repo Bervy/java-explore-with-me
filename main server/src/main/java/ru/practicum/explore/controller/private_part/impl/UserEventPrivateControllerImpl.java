@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.private_part.UserEventPrivateController;
 import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.dto.event.EventFullDto;
-import ru.practicum.explore.service.private_part.UserEventPrivateService;
+import ru.practicum.explore.service.private_part.impl.UserEventPrivateServiceImpl;
 import ru.practicum.explore.utils.Constants;
 
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.List;
 @Validated
 public class UserEventPrivateControllerImpl implements UserEventPrivateController {
 
-    private final UserEventPrivateService userEventPrivateService;
+    private final UserEventPrivateServiceImpl userEventPrivateService;
 
     @PostMapping
     @Override

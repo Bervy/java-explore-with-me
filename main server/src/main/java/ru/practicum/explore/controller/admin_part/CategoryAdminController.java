@@ -5,7 +5,6 @@ import ru.practicum.explore.dto.category.CategoryFullDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Positive;
-import java.nio.file.AccessDeniedException;
 
 public interface CategoryAdminController {
 
@@ -13,5 +12,5 @@ public interface CategoryAdminController {
 
     CategoryFullDto updateCategory(@Valid CategoryFullDto categoryFullDto);
 
-    void removeCategory(@Positive Long catId) throws AccessDeniedException;
+    void removeCategory(@Positive Long catId);
 }

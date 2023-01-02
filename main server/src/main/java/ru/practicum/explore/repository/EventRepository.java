@@ -15,6 +15,8 @@ import java.util.Optional;
 public interface EventRepository extends JpaRepository<Event, Long> {
     List<Event> findAllByInitiatorId(Long userId, Pageable pageable);
 
+    Optional<Event> findByIdAndInitiatorId(Long eventId, Long userId);
+
     @Query("SELECT e FROM Event e " +
             " WHERE e.initiator.id IN :users " +
             " AND e.state IN :states " +

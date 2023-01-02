@@ -6,9 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.admin_part.CategoryAdminController;
 import ru.practicum.explore.dto.category.CategoryDto;
 import ru.practicum.explore.dto.category.CategoryFullDto;
-import ru.practicum.explore.service.admin_part.CategoryAdminService;
-
-import java.nio.file.AccessDeniedException;
+import ru.practicum.explore.service.admin_part.impl.CategoryAdminServiceImpl;
 
 @RestController
 @RequestMapping("/admin/categories")
@@ -16,7 +14,7 @@ import java.nio.file.AccessDeniedException;
 @Validated
 public class CategoryAdminControllerImpl implements CategoryAdminController {
 
-    private final CategoryAdminService categoryAdminService;
+    private final CategoryAdminServiceImpl categoryAdminService;
 
     @PatchMapping
     @Override
@@ -35,7 +33,7 @@ public class CategoryAdminControllerImpl implements CategoryAdminController {
     @DeleteMapping("{catId}")
     @Override
     public void removeCategory(
-            @PathVariable Long catId) throws AccessDeniedException {
+            @PathVariable Long catId) {
         categoryAdminService.removeCategory(catId);
     }
 }

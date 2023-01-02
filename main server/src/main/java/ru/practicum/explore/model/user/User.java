@@ -13,10 +13,11 @@ import javax.persistence.*;
 @Builder
 public class User {
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
     private Float rate;
 }

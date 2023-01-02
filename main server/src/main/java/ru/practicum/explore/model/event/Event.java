@@ -22,6 +22,7 @@ import java.util.Objects;
 @Builder
 public class Event {
     @Id
+    @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(length = 2000)

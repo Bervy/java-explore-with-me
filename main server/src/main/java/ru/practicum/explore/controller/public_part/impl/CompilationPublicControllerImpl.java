@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.public_part.CompilationPublicController;
 import ru.practicum.explore.dto.compilation.CompilationFullDto;
-import ru.practicum.explore.service.public_part.CompilationPublicService;
+import ru.practicum.explore.service.public_part.impl.CompilationPublicServiceImpl;
 import ru.practicum.explore.utils.Constants;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @Validated
 public class CompilationPublicControllerImpl implements CompilationPublicController {
 
-    private final CompilationPublicService compilationPublicService;
+    private final CompilationPublicServiceImpl compilationPublicService;
 
     @GetMapping
     @Override

@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.admin_part.CompilationAdminController;
 import ru.practicum.explore.dto.compilation.CompilationDto;
 import ru.practicum.explore.dto.compilation.CompilationFullDto;
-import ru.practicum.explore.service.admin_part.CompilationAdminService;
+import ru.practicum.explore.service.admin_part.impl.CompilationAdminServiceImpl;
 
 @RestController
 @RequestMapping("/admin/compilations")
@@ -14,7 +14,7 @@ import ru.practicum.explore.service.admin_part.CompilationAdminService;
 @Validated
 public class CompilationAdminControllerImpl implements CompilationAdminController {
 
-    private final CompilationAdminService compilationAdminService;
+    private final CompilationAdminServiceImpl compilationAdminService;
 
     @PostMapping
     @Override

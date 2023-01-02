@@ -1,112 +1,27 @@
 package ru.practicum.explore.service.admin_part;
 
-import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import ru.practicum.explore.controller.admin_part.EventAdminController;
 import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.dto.event.EventFullDto;
-import ru.practicum.explore.error.ConflictException;
-import ru.practicum.explore.error.NotFoundException;
-import ru.practicum.explore.mapper.EventMapper;
-import ru.practicum.explore.model.event.Event;
-import ru.practicum.explore.model.event.EventState;
-import ru.practicum.explore.repository.CategoryRepository;
-import ru.practicum.explore.repository.EventRepository;
-import ru.practicum.explore.utils.Constants;
-import ru.practicum.explore.utils.Utils;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
+import javax.validation.Valid;
+import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import static ru.practicum.explore.error.ExceptionDescriptions.*;
+public interface EventAdminService {
 
-@Service
-@RequiredArgsConstructor
-public class EventAdminService implements EventAdminController {
-
-    private static final int ADMIN_TIME_HOUR_BEFORE_START = 1;
-    private static final int ONE_HUNDRED_YEARS_AFTER_NOW = 100;
-    private final EventRepository eventRepository;
-    private final CategoryRepository categoryRepository;
-
-    public List<EventFullDto> findAllEvents(
+    List<EventFullDto> findAllEvents(
             Long[] users,
             String[] states,
             Long[] categories,
             String rangeStart,
             String rangeEnd,
-            Integer from,
-            Integer size) {
-        List<EventState> stateList = states == null ? List.of() : getCorrectStates(states);
-        LocalDateTime startDate = rangeStart == null ? LocalDateTime.now() :
-                LocalDateTime.parse(rangeStart, Constants.DATE_TIME_SPACE);
-        LocalDateTime endDate = rangeStart == null ?
-                LocalDateTime.now().plusYears(ONE_HUNDRED_YEARS_AFTER_NOW) :
-                LocalDateTime.parse(rangeEnd, Constants.DATE_TIME_SPACE);
-        Sort sort = Sort.sort(Event.class).by(Event::getEventDate).descending();
-        Pageable pageable = PageRequest.of(from / size, size, sort);
-        List<Event> eventList = eventRepository.findAllByUsersAndStatesAndCategories(
-                users,
-                stateList,
-                categories,
-                startDate,
-                endDate,
-                pageable);
-        return EventMapper.eventToListOutDto(eventList);
-    }
+            @PositiveOrZero Integer from,
+            @Positive Integer size);
 
-    public EventFullDto publishEvent(Long eventId) {
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException(EVENT_NOT_FOUND.getTitle())
-        );
-        if (event.getState() != EventState.PENDING) {
-            throw new ConflictException(EVENT_IS_NOT_PENDING.getTitle());
-        }
-        Utils.checkTimeBeforeOrThrow(event.getEventDate(), ADMIN_TIME_HOUR_BEFORE_START);
-        event.setPublishedOn(LocalDateTime.now());
-        event.setState(EventState.PUBLISHED);
-        return EventMapper.eventToOutDto(eventRepository.save(event));
-    }
+    EventFullDto publishEvent(@Positive Long eventId);
 
-    public EventFullDto rejectEvent(Long eventId) {
-        return getEventFullDto(eventId, eventRepository);
-    }
+    EventFullDto rejectEvent(@Positive Long eventId);
 
-    @Transactional
-    public EventFullDto updateEvent(Long eventId, EventDto eventInDto) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
-        Utils.setNotNullParamToEntity(eventInDto, event, categoryRepository);
-        event.setEventDate(eventInDto.getEventDate());
-        return EventMapper.eventToOutDto(eventRepository.save(event));
-    }
-
-    private List<EventState> getCorrectStates(String[] states) {
-        try {
-            return Arrays.stream(states).map(EventAdminService::stringToEventState).collect(Collectors.toList());
-        } catch (IllegalArgumentException err) {
-            throw new IllegalArgumentException(STATE_NOT_FOUND.getTitle());
-        }
-    }
-
-    private static EventState stringToEventState(String state) {
-        return EventState.valueOf(state);
-    }
-
-    public static EventFullDto getEventFullDto(Long eventId, EventRepository eventRepository) {
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException(EVENT_NOT_FOUND.getTitle())
-        );
-        if (event.getState() != EventState.PENDING) {
-            throw new ConflictException(EVENT_IS_NOT_PENDING.getTitle());
-        }
-        event.setState(EventState.CANCELED);
-        return EventMapper.eventToOutDto(eventRepository.save(event));
-    }
+    EventFullDto updateEvent(@Positive Long eventId, @Valid EventDto eventInDto);
 }
