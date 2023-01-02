@@ -36,7 +36,7 @@ public class UserRequestPrivateServiceImpl implements UserRequestPrivateService 
     @Transactional
     public RequestFullDto addRequest(Long userId, Long eventId) {
         Optional<Request> requestFromDb = requestRepository.findByRequesterIdAndEventId(userId, eventId);
-        if(requestFromDb.isPresent()) {
+        if (requestFromDb.isPresent()) {
             throw new ConflictException(USER_ALREADY_EXISTS.getTitle());
         }
         User user = userRepository.findById(userId).orElseThrow(
