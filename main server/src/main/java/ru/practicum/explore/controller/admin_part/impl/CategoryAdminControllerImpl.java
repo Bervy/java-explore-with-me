@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.admin_part.CategoryAdminController;
 import ru.practicum.explore.dto.category.CategoryDto;
 import ru.practicum.explore.dto.category.CategoryFullDto;
-import ru.practicum.explore.service.admin_part.impl.CategoryAdminServiceImpl;
+import ru.practicum.explore.service.admin_part.CategoryAdminService;
 
 @RestController
 @RequestMapping("/admin/categories")
@@ -14,7 +14,7 @@ import ru.practicum.explore.service.admin_part.impl.CategoryAdminServiceImpl;
 @Validated
 public class CategoryAdminControllerImpl implements CategoryAdminController {
 
-    private final CategoryAdminServiceImpl categoryAdminService;
+    private final CategoryAdminService categoryAdminService;
 
     @PatchMapping
     @Override

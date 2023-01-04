@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.private_part.UserRequestPrivateController;
 import ru.practicum.explore.dto.request.RequestFullDto;
-import ru.practicum.explore.service.private_part.impl.UserRequestPrivateServiceImpl;
+import ru.practicum.explore.service.private_part.UserRequestPrivateService;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Validated
 public class UserRequestPrivateControllerImpl implements UserRequestPrivateController {
 
-    private final UserRequestPrivateServiceImpl requestsService;
+    private final UserRequestPrivateService requestsService;
 
     @PostMapping
     @Override

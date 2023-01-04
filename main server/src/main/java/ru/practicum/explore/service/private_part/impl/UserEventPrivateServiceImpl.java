@@ -25,7 +25,6 @@ import java.security.InvalidParameterException;
 import java.util.List;
 
 import static ru.practicum.explore.error.ExceptionDescriptions.*;
-import static ru.practicum.explore.service.admin_part.impl.EventAdminServiceImpl.getEventFullDto;
 
 @Service
 @RequiredArgsConstructor
@@ -89,8 +88,13 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     @Override
     @Transactional
     public EventFullDto cancelEvent(Long userId, Long eventId) {
-        checkUserExists(userId);
-        return getEventFullDto(eventId, eventRepository);
+        Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
+        if (event.getState() != EventState.PENDING) {
+            throw new ConflictException(EVENT_IS_NOT_PENDING.getTitle());
+        }
+        event.setState(EventState.CANCELED);
+        return EventMapper.eventToOutDto(eventRepository.save(event));
     }
 
     private void checkUserExists(Long userId) {

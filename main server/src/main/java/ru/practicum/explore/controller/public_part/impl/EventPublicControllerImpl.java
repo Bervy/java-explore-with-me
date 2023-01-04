@@ -4,7 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.public_part.EventPublicController;
 import ru.practicum.explore.dto.event.EventPublicFullDto;
-import ru.practicum.explore.service.public_part.impl.EventPublicServiceImpl;
+import ru.practicum.explore.service.public_part.EventPublicService;
 import ru.practicum.explore.utils.Constants;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class EventPublicControllerImpl implements EventPublicController {
 
-    private final EventPublicServiceImpl eventPublicService;
+    private final EventPublicService eventPublicService;
 
     @GetMapping
     @Override

@@ -33,7 +33,7 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
             return CategoryMapper.categoryToDtoOut(categoryRepository
                     .save(CategoryMapper.dtoInToCategory(categoryInDto)));
         } catch (DataAccessException dataAccessException) {
-            throw new ConflictException(USER_ALREADY_EXISTS.getTitle());
+            throw new ConflictException(CATEGORY_ALREADY_EXISTS.getTitle());
         }
     }
 

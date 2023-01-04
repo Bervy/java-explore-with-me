@@ -3,20 +3,17 @@ package ru.practicum.explore.service.private_part;
 import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.dto.event.EventFullDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public interface UserEventPrivateService {
 
-    EventFullDto addEvent(@Positive Long userId, @Valid EventDto eventInDto);
+    EventFullDto addEvent(Long userId, EventDto eventInDto);
 
-    EventFullDto updateEvent(@Positive Long userId, @Valid EventDto eventInDto);
+    EventFullDto updateEvent(Long userId, EventDto eventInDto);
 
-    List<EventFullDto> findAllEvents(@Positive Long userId, @PositiveOrZero Integer from, @Positive Integer size);
+    List<EventFullDto> findAllEvents(Long userId, Integer from, Integer size);
 
-    EventFullDto getEvent(@Positive Long userId, @Positive Long eventId);
+    EventFullDto getEvent(Long userId, Long eventId);
 
-    EventFullDto cancelEvent(@Positive Long userId, @Positive Long eventId);
+    EventFullDto cancelEvent(Long userId, Long eventId);
 }

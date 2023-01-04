@@ -2,13 +2,11 @@ package ru.practicum.explore.service.public_part;
 
 import ru.practicum.explore.dto.category.CategoryFullDto;
 
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public interface CategoryPublicService {
 
-    List<CategoryFullDto> findAllCategories(@PositiveOrZero Integer from, @Positive Integer size);
+    List<CategoryFullDto> findAllCategories(Integer from, Integer size);
 
-    CategoryFullDto findCategoryById(@Positive Long catId);
+    CategoryFullDto findCategoryById(Long catId);
 }

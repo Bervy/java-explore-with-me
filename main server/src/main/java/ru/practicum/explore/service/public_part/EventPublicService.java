@@ -3,8 +3,6 @@ package ru.practicum.explore.service.public_part;
 import ru.practicum.explore.dto.event.EventPublicFullDto;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public interface EventPublicService {
@@ -17,10 +15,10 @@ public interface EventPublicService {
             String rangeEnd,
             Boolean onlyAvailable,
             String sort,
-            @PositiveOrZero Integer from,
-            @Positive Integer size,
+            Integer from,
+            Integer size,
             HttpServletRequest request
     );
 
-    EventPublicFullDto findEventById(@Positive Long eventId, HttpServletRequest request);
+    EventPublicFullDto findEventById(Long eventId, HttpServletRequest request);
 }

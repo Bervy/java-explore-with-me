@@ -35,6 +35,10 @@ public class EventAdminServiceImpl implements EventAdminService {
     private final EventRepository eventRepository;
     private final CategoryRepository categoryRepository;
 
+    private static EventState stringToEventState(String state) {
+        return EventState.valueOf(state);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<EventFullDto> findAllEvents(
@@ -81,7 +85,14 @@ public class EventAdminServiceImpl implements EventAdminService {
     @Override
     @Transactional
     public EventFullDto rejectEvent(Long eventId) {
-        return getEventFullDto(eventId, eventRepository);
+        Event event = eventRepository.findById(eventId).orElseThrow(
+                () -> new NotFoundException(EVENT_NOT_FOUND.getTitle())
+        );
+        if (event.getState() != EventState.PENDING) {
+            throw new ConflictException(EVENT_IS_NOT_PENDING.getTitle());
+        }
+        event.setState(EventState.CANCELED);
+        return EventMapper.eventToOutDto(eventRepository.save(event));
     }
 
     @Override
@@ -100,20 +111,5 @@ public class EventAdminServiceImpl implements EventAdminService {
         } catch (IllegalArgumentException err) {
             throw new IllegalArgumentException(STATE_NOT_FOUND.getTitle());
         }
-    }
-
-    private static EventState stringToEventState(String state) {
-        return EventState.valueOf(state);
-    }
-
-    public static EventFullDto getEventFullDto(Long eventId, EventRepository eventRepository) {
-        Event event = eventRepository.findById(eventId).orElseThrow(
-                () -> new NotFoundException(EVENT_NOT_FOUND.getTitle())
-        );
-        if (event.getState() != EventState.PENDING) {
-            throw new ConflictException(EVENT_IS_NOT_PENDING.getTitle());
-        }
-        event.setState(EventState.CANCELED);
-        return EventMapper.eventToOutDto(eventRepository.save(event));
     }
 }

@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.private_part.UserEventRequestPrivateController;
 import ru.practicum.explore.dto.request.RequestFullDto;
-import ru.practicum.explore.service.private_part.impl.UserEventRequestPrivateServiceImpl;
+import ru.practicum.explore.service.private_part.UserEventRequestPrivateService;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ import java.util.List;
 @Validated
 public class UserEventRequestPrivateControllerImpl implements UserEventRequestPrivateController {
 
-    private final UserEventRequestPrivateServiceImpl userEventRequestPrivateService;
+    private final UserEventRequestPrivateService userEventRequestPrivateService;
 
     @GetMapping("{eventId}/requests")
     @Override

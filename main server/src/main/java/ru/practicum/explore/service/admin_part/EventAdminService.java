@@ -3,9 +3,6 @@ package ru.practicum.explore.service.admin_part;
 import ru.practicum.explore.dto.event.EventDto;
 import ru.practicum.explore.dto.event.EventFullDto;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Positive;
-import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
 
 public interface EventAdminService {
@@ -16,12 +13,12 @@ public interface EventAdminService {
             Long[] categories,
             String rangeStart,
             String rangeEnd,
-            @PositiveOrZero Integer from,
-            @Positive Integer size);
+            Integer from,
+            Integer size);
 
-    EventFullDto publishEvent(@Positive Long eventId);
+    EventFullDto publishEvent(Long eventId);
 
-    EventFullDto rejectEvent(@Positive Long eventId);
+    EventFullDto rejectEvent(Long eventId);
 
-    EventFullDto updateEvent(@Positive Long eventId, @Valid EventDto eventInDto);
+    EventFullDto updateEvent(Long eventId, EventDto eventInDto);
 }

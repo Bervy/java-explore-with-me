@@ -5,7 +5,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.explore.controller.public_part.CategoryPublicController;
 import ru.practicum.explore.dto.category.CategoryFullDto;
-import ru.practicum.explore.service.public_part.impl.CategoryPublicServiceImpl;
+import ru.practicum.explore.service.public_part.CategoryPublicService;
 import ru.practicum.explore.utils.Constants;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
 @Validated
 public class CategoryPublicControllerImpl implements CategoryPublicController {
 
-    private final CategoryPublicServiceImpl categoryPublicService;
+    private final CategoryPublicService categoryPublicService;
 
     @GetMapping
     @Override
