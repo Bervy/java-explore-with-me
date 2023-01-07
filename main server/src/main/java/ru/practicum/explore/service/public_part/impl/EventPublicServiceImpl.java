@@ -70,7 +70,7 @@ public class EventPublicServiceImpl implements EventPublicService {
                 sortBy = Sort.sort(Event.class).by(Event::getViews).descending();
                 break;
             case RATE:
-                sortBy = Sort.sort(Event.class).by(Event::getRate).descending();
+                sortBy = Sort.sort(Event.class).by(Event::getUserRate).descending();
                 break;
             default:
                 throw new IllegalArgumentException(UNKNOWN_TYPE_OF_SORT.getTitle());

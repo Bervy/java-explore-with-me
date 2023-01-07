@@ -5,7 +5,7 @@ DROP TABLE IF EXISTS users cascade;
 DROP TABLE IF EXISTS categories cascade;
 DROP TABLE IF EXISTS locations cascade;
 DROP TABLE IF EXISTS compilations_events cascade;
-DROP TABLE IF EXISTS likes cascade;
+DROP TABLE IF EXISTS grades cascade;
 
 CREATE TABLE IF NOT EXISTS users
 (
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS events
         CONSTRAINT annotation_length CHECK (char_length(annotation) >= 20 AND char_length(annotation) <= 2000),
     category_id        BIGINT NOT NULL
         CONSTRAINT events_categories_fkey REFERENCES categories,
-    confirmed_requests INTEGER,
+    confirmed_requests INTEGER DEFAULT 0,
     created_on         TIMESTAMP WITHOUT TIME ZONE,
     description        TEXT,
     CONSTRAINT description_length CHECK (char_length(description) >= 20 AND char_length(description) <= 7000),
@@ -54,7 +54,8 @@ CREATE TABLE IF NOT EXISTS events
     title              VARCHAR(120)
         CONSTRAINT title_length CHECK (char_length(title) >= 3),
     views              BIGINT  DEFAULT 0,
-    rate               INTEGER DEFAULT 0
+    rate               INTEGER DEFAULT 0,
+    user_rate          REAL  DEFAULT 0
 );
 
 CREATE TABLE IF NOT EXISTS compilations
@@ -71,12 +72,12 @@ CREATE TABLE IF NOT EXISTS compilations_events
     compilation_id BIGINT REFERENCES compilations (id)
 );
 
-CREATE TABLE IF NOT EXISTS likes
+CREATE TABLE IF NOT EXISTS grades
 (
-    id       BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    user_id  BIGINT REFERENCES users (id),
-    event_id BIGINT REFERENCES events (id),
-    type     VARCHAR(7)
+    user_id  BIGINT REFERENCES users (id) NOT NULL,
+    event_id BIGINT REFERENCES events (id) NOT NULL,
+    type     VARCHAR(7),
+    CONSTRAINT PK_Tmp PRIMARY KEY (user_id, event_id)
 );
 
 CREATE TABLE IF NOT EXISTS requests

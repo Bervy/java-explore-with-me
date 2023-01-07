@@ -21,6 +21,10 @@ public class EventMapper {
                 .paid(eventInDto.getPaid())
                 .participantLimit(eventInDto.getParticipantLimit())
                 .requestModeration(eventInDto.getRequestModeration())
+                .confirmedRequests(0)
+                .views(0L)
+                .rate(0)
+                .userRate(0D)
                 .build();
     }
 
@@ -42,7 +46,7 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .views(event.getViews())
-                .rate(event.getRate())
+                .userRate(event.getUserRate())
                 .build();
     }
 
@@ -64,7 +68,7 @@ public class EventMapper {
                 .requestModeration(event.getRequestModeration())
                 .state(event.getState())
                 .views(event.getViews())
-                .rate(event.getRate())
+                .userRate(event.getUserRate())
                 .build();
     }
 
