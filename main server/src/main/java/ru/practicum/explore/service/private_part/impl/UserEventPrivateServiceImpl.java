@@ -25,7 +25,6 @@ import ru.practicum.explore.service.private_part.UserEventPrivateService;
 import ru.practicum.explore.utils.Utils;
 
 import java.security.InvalidParameterException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
