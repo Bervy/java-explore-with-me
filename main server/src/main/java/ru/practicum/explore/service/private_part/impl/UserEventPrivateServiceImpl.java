@@ -63,7 +63,7 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     @Override
     @Transactional
     public EventFullDto updateEvent(Long userId, EventDto eventInDto) {
-        Event event = getEventFromRepository(eventInDto.getEventId(), userId);
+        Event event = getEventFromRepositoryByUserId(eventInDto.getEventId(), userId);
         if (event.getState() == EventState.PUBLISHED) {
             throw new ConflictException(EVENT_IS_PUBLISHED.getTitle());
         } else if (event.getState() == EventState.CANCELED) {
@@ -86,7 +86,7 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     @Override
     @Transactional(readOnly = true)
     public EventFullDto getEvent(Long userId, Long eventId) {
-        Event event = getEventFromRepository(eventId, userId);
+        Event event = getEventFromRepositoryByUserId(eventId, userId);
         return EventMapper.eventToOutDto(event);
     }
 
@@ -105,13 +105,12 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     @Override
     @Transactional
     public void addGrade(Long userId, Long eventId, GradeType gradeType) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
+        Event event = getEventFromRepository(eventId);
         if (Boolean.FALSE.equals(requestRepository
                 .existsByRequesterIdAndEventIdAndStatus(userId, eventId, RequestState.CONFIRMED))) {
             throw new AccessDeniedException(FORBIDDEN_TO_RATE_DID_NOT_PARTICIPATE.getTitle());
         }
-        if (event.getEventDate().isBefore(LocalDateTime.now())) {
+        if (event.getEventDate().isAfter(LocalDateTime.now())) {
             throw new AccessDeniedException(FORBIDDEN_TO_RATE_EVENT_NOT_BEGUN.getTitle());
         }
         if (userId.equals(event.getInitiator().getId())) {
@@ -139,8 +138,7 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     @Override
     @Transactional
     public void removeGrade(Long userId, Long eventId, GradeType gradeType) {
-        Event event = eventRepository.findById(eventId)
-                .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
+        Event event = getEventFromRepository(eventId);
         Grade grade = likeRepository
                 .findByUserEventPrimaryKeyAndType(new UserEventPrimaryKey(userId, eventId), gradeType)
                 .orElseThrow(() -> new NotFoundException(GRADE_NOT_FOUND.getTitle()));
@@ -173,8 +171,13 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
         }
     }
 
-    private Event getEventFromRepository(Long eventId, Long userId) {
+    private Event getEventFromRepositoryByUserId(Long eventId, Long userId) {
         return eventRepository.findByIdAndInitiatorId(eventId, userId)
+                .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
+    }
+
+    private Event getEventFromRepository(Long eventId) {
+        return eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
     }
 

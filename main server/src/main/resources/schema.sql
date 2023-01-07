@@ -1,11 +1,4 @@
-DROP TABLE IF EXISTS compilations cascade;
-DROP TABLE IF EXISTS requests cascade;
-DROP TABLE IF EXISTS events cascade;
-DROP TABLE IF EXISTS users cascade;
-DROP TABLE IF EXISTS categories cascade;
-DROP TABLE IF EXISTS locations cascade;
-DROP TABLE IF EXISTS compilations_events cascade;
-DROP TABLE IF EXISTS grades cascade;
+DROP TABLE IF EXISTS compilations, requests, events, users, categories, locations, compilations_events, grades  CASCADE;
 
 CREATE TABLE IF NOT EXISTS users
 (
