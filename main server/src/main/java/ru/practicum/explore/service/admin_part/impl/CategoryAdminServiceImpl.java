@@ -21,13 +21,13 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CategoryAdminServiceImpl implements CategoryAdminService {
 
     private final CategoryRepository categoryRepository;
     private final EventRepository eventRepository;
 
     @Override
-    @Transactional
     public CategoryFullDto addCategory(CategoryDto categoryInDto) {
         try {
             return CategoryMapper.categoryToDtoOut(categoryRepository
@@ -38,7 +38,6 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     }
 
     @Override
-    @Transactional
     public CategoryFullDto updateCategory(CategoryFullDto categoryFullDto) {
         checkCategoryExists(categoryFullDto.getId());
         Optional<Category> categoryByName = categoryRepository.findByName(categoryFullDto.getName());
@@ -50,7 +49,6 @@ public class CategoryAdminServiceImpl implements CategoryAdminService {
     }
 
     @Override
-    @Transactional
     public void removeCategory(Long catId) {
         checkCategoryExists(catId);
         if (Boolean.TRUE.equals(eventRepository.existsByCategoryId(catId))) {

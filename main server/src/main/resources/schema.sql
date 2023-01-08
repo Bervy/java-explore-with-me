@@ -69,7 +69,7 @@ CREATE TABLE IF NOT EXISTS grades
 (
     user_id  BIGINT REFERENCES users (id) NOT NULL,
     event_id BIGINT REFERENCES events (id) NOT NULL,
-    type     VARCHAR(7),
+    type     VARCHAR(7) NOT NULL,
     CONSTRAINT PK_Tmp PRIMARY KEY (user_id, event_id)
 );
 

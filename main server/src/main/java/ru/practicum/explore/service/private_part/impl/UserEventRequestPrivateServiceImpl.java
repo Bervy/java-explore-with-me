@@ -20,13 +20,13 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserEventRequestPrivateServiceImpl implements UserEventRequestPrivateService {
 
     private final RequestRepository requestRepository;
     private final EventRepository eventRepository;
 
     @Override
-    @Transactional
     public RequestFullDto confirmRequest(Long userId, Long eventId, Long requestId) {
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new NotFoundException(REQUEST_NOT_FOUND.getTitle())
@@ -55,7 +55,6 @@ public class UserEventRequestPrivateServiceImpl implements UserEventRequestPriva
     }
 
     @Override
-    @Transactional
     public RequestFullDto rejectRequest(Long userId, Long eventId, Long requestId) {
         Request request = requestRepository.findById(requestId).orElseThrow(
                 () -> new NotFoundException(REQUEST_NOT_FOUND.getTitle())

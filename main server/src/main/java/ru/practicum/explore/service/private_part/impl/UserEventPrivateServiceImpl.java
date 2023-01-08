@@ -32,6 +32,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserEventPrivateServiceImpl implements UserEventPrivateService {
 
     private static final int USER_TIME_HOUR_BEFORE_START = 2;
@@ -42,7 +43,6 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     private final GradeRepository likeRepository;
 
     @Override
-    @Transactional
     public EventFullDto addEvent(Long userId, EventDto eventInDto) {
         Category category = getCategoryFromRepository(eventInDto.getCategory());
         User user = getUserFromRepository(userId);
@@ -60,7 +60,6 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     }
 
     @Override
-    @Transactional
     public EventFullDto updateEvent(Long userId, EventDto eventInDto) {
         Event event = getEventFromRepositoryByUserId(eventInDto.getEventId(), userId);
         if (event.getState() == EventState.PUBLISHED) {
@@ -90,7 +89,6 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     }
 
     @Override
-    @Transactional
     public EventFullDto cancelEvent(Long userId, Long eventId) {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, userId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));
@@ -102,7 +100,6 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     }
 
     @Override
-    @Transactional
     public void addGrade(Long userId, Long eventId, GradeType gradeType) {
         Event event = getEventFromRepository(eventId);
         if (Boolean.FALSE.equals(requestRepository
@@ -136,7 +133,6 @@ public class UserEventPrivateServiceImpl implements UserEventPrivateService {
     }
 
     @Override
-    @Transactional
     public void removeGrade(Long userId, Long eventId, GradeType gradeType) {
         Event event = getEventFromRepository(eventId);
         Grade grade = likeRepository

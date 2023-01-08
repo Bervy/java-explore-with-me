@@ -28,6 +28,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.UNKNOWN_TYPE_OF_S
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EventPublicServiceImpl implements EventPublicService {
 
     private static final String APP_NAME = "main service";
@@ -36,7 +37,6 @@ public class EventPublicServiceImpl implements EventPublicService {
     private final StatClient adminStatClient;
 
     @Override
-    @Transactional
     public EventPublicFullDto findEventById(Long eventId, HttpServletRequest request) {
         Event event = eventRepository.findByIdAndState(eventId, EventState.PUBLISHED).orElseThrow(
                 () -> new NotFoundException(EVENT_NOT_FOUND.getTitle())
