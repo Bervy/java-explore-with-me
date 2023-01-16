@@ -26,6 +26,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserRequestPrivateServiceImpl implements UserRequestPrivateService {
 
     private final RequestRepository requestRepository;
@@ -33,7 +34,6 @@ public class UserRequestPrivateServiceImpl implements UserRequestPrivateService 
     private final EventRepository eventRepository;
 
     @Override
-    @Transactional
     public RequestFullDto addRequest(Long userId, Long eventId) {
         Optional<Request> requestFromDb = requestRepository.findByRequesterIdAndEventId(userId, eventId);
         if (requestFromDb.isPresent()) {
@@ -75,7 +75,6 @@ public class UserRequestPrivateServiceImpl implements UserRequestPrivateService 
     }
 
     @Override
-    @Transactional
     public RequestFullDto cancelRequest(Long userId, Long requestId) {
         Request request = requestRepository.findByIdAndRequesterId(requestId, userId).orElseThrow(
                 () -> new NotFoundException(REQUEST_NOT_FOUND.getTitle())

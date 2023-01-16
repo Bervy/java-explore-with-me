@@ -19,4 +19,8 @@ public interface UserEventPrivateController {
     EventFullDto getEvent(@Positive Long userId, @Positive Long eventId);
 
     EventFullDto cancelEvent(@Positive Long userId, @Positive Long eventId);
+
+    void addGrade(Long userId, Long eventId, String likeType);
+
+    void removeGrade(Long userId, Long eventId, String likeType);
 }

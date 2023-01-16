@@ -28,6 +28,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class EventAdminServiceImpl implements EventAdminService {
 
     private static final int ADMIN_TIME_HOUR_BEFORE_START = 1;
@@ -68,7 +69,6 @@ public class EventAdminServiceImpl implements EventAdminService {
     }
 
     @Override
-    @Transactional
     public EventFullDto publishEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException(EVENT_NOT_FOUND.getTitle())
@@ -83,7 +83,6 @@ public class EventAdminServiceImpl implements EventAdminService {
     }
 
     @Override
-    @Transactional
     public EventFullDto rejectEvent(Long eventId) {
         Event event = eventRepository.findById(eventId).orElseThrow(
                 () -> new NotFoundException(EVENT_NOT_FOUND.getTitle())
@@ -96,7 +95,6 @@ public class EventAdminServiceImpl implements EventAdminService {
     }
 
     @Override
-    @Transactional
     public EventFullDto updateEvent(Long eventId, EventDto eventInDto) {
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new NotFoundException(EVENT_NOT_FOUND.getTitle()));

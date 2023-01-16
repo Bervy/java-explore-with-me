@@ -17,6 +17,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.COMPILATION_NOT_F
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CompilationPublicServiceImpl implements CompilationPublicService {
 
     private final CompilationRepository compilationRepository;
