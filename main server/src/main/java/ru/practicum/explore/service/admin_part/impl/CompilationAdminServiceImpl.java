@@ -17,13 +17,13 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CompilationAdminServiceImpl implements CompilationAdminService {
 
     private final EventRepository eventRepository;
     private final CompilationRepository compilationRepository;
 
     @Override
-    @Transactional
     public CompilationFullDto addCompilation(CompilationDto compilationInDto) {
         Compilation compilation = CompilationMapper.dtoToCompilation(
                 compilationInDto, eventRepository.findAllById(compilationInDto.getEvents())
@@ -32,7 +32,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     }
 
     @Override
-    @Transactional
     public void removeCompilation(Long compId) {
         if (!compilationRepository.existsById(compId)) {
             throw new NotFoundException(COMPILATION_NOT_FOUND.getTitle());
@@ -41,7 +40,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     }
 
     @Override
-    @Transactional
     public void removeEventFromCompilation(Long compId, Long eventId) {
         Compilation compilation = getCompilationFromRepository(compId);
         compilation.getEvents().removeIf(event -> event.getId().equals(eventId));
@@ -49,7 +47,6 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     }
 
     @Override
-    @Transactional
     public CompilationFullDto addEventToCompilation(Long compId, Long eventId) {
         Compilation compilation = getCompilationFromRepository(compId);
         Event event = getEventFromRepository(eventId);
@@ -59,13 +56,11 @@ public class CompilationAdminServiceImpl implements CompilationAdminService {
     }
 
     @Override
-    @Transactional
     public void pinCompilation(Long compId) {
         setPin(compId, true);
     }
 
     @Override
-    @Transactional
     public void unPinCompilation(Long compId) {
         setPin(compId, false);
     }

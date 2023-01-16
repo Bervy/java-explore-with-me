@@ -55,4 +55,32 @@ public interface EventRepository extends JpaRepository<Event, Long> {
                                LocalDateTime rangeEnd,
                                Boolean onlyAvailable,
                                Pageable pageable);
+
+    int countByInitiatorId(Long userId);
+
+    @Query("SELECT SUM(e.rate) FROM Event e " +
+            " WHERE e.initiator.id = :userId"
+    )
+    Double sumRateByInitiatorId(Long userId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("UPDATE Event e " +
+            " SET e.rate = e.rate + 1 " +
+            " WHERE e.id = :eventId")
+    void incrementRate(Long eventId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("UPDATE Event e " +
+            " SET e.rate = e.rate - 1 " +
+            " WHERE e.id = :eventId")
+    void decrementRate(Long eventId);
+
+    @Modifying(clearAutomatically = true, flushAutomatically = true)
+    @Transactional
+    @Query("UPDATE Event e " +
+            " SET e.userRate = :userRate" +
+            " WHERE e.id = :eventId")
+    void setUserRate(Long eventId, Double userRate);
 }

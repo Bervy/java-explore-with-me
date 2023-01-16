@@ -27,7 +27,7 @@ public class Event {
     private Long id;
     @Column(length = 2000)
     private String annotation;
-    @Column(name = "confirmed_requests")
+    @Column(name = "confirmed_requests", columnDefinition = "INTEGER default 0")
     private Integer confirmedRequests;
     @CreationTimestamp
     @Column(name = "created_on")
@@ -44,8 +44,12 @@ public class Event {
     @Column(name = "request_moderation")
     private Boolean requestModeration;
     private String title;
+    @Column(columnDefinition = "BIGINT default 0")
     private Long views;
-    private Integer rate = 0;
+    @Column(columnDefinition = "INTEGER default 0")
+    private Integer rate;
+    @Column(columnDefinition = "REAL default 0D")
+    private Double userRate;
     @ManyToMany
     @JoinTable(
             name = "COMPILATIONS_EVENTS",

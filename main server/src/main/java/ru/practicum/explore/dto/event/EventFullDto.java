@@ -35,5 +35,5 @@ public class EventFullDto {
     private Boolean requestModeration;
     private EventState state;
     private Long views;
-    private Integer rate;
+    private Double userRate;
 }

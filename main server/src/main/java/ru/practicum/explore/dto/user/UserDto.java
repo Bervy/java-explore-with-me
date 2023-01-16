@@ -18,5 +18,5 @@ public class UserDto {
     @NotNull
     @Email
     private String email;
-    private Float rate;
+    private Double rate;
 }

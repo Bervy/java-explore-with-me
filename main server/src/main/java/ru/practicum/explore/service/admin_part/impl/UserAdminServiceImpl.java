@@ -18,12 +18,12 @@ import static ru.practicum.explore.error.ExceptionDescriptions.*;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserAdminServiceImpl implements UserAdminService {
 
     private final UserRepository userRepository;
 
     @Override
-    @Transactional
     public UserDto createUser(UserDto userDto) {
         try {
             return UserMapper.userToDto(userRepository.save(UserMapper.dtoToUser(userDto)));
@@ -40,7 +40,6 @@ public class UserAdminServiceImpl implements UserAdminService {
     }
 
     @Override
-    @Transactional
     public void deleteUserById(Long userId) {
         if (!userRepository.existsById(userId)) {
             throw new NotFoundException(USER_NOT_FOUND.getTitle());

@@ -19,6 +19,7 @@ import static ru.practicum.explore.error.ExceptionDescriptions.CATEGORY_NOT_FOUN
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class CategoryPublicServiceImpl implements CategoryPublicService {
 
     private final CategoryRepository categoryRepository;
