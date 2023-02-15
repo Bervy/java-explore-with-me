@@ -10,7 +10,7 @@
 Использованные технологии:
 -
 
-- Java 11,Maven, Spring-Boot, Hibernate, Postgresql, Lombok, Docker, Jpa
+- Java 11,Maven, Spring-Boot, Hibernate, Postgresql, Lombok, Docker, Jpa, AOP
 
 Функционал приложения:
 -
@@ -84,5 +84,6 @@
     * server.port = 8080
   4) Запустить сервис EWM-statistics
     * server.port = 9090
-3. Для запуска проекта потребуется docker и docker-compose.
-4. Команда "docker-compose up" запускает оба сервиса с их бд
+2. Для запуска проекта потребуется docker.
+3. Сначала собираем проект "mvn clean package".
+4. Команда "docker-compose up" запускает оба сервиса с бд
